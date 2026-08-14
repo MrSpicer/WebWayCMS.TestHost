@@ -1,0 +1,20 @@
+@*
+    Two Column Equal Layout
+    ┌────────────┬────────────┐
+    │  Left (6)  │ Right (6)  │
+    └────────────┴────────────┘
+
+    Use case: Feature comparisons, dual content sections
+    Mobile: Columns stack automatically
+*@
+
+<div class="container py-5">
+    <div class="row">
+        <div class="col-md-6">
+            @await Component.InvokeAsync("ContentZone", new { zoneName = "Left" })
+        </div>
+        <div class="col-md-6">
+            @await Component.InvokeAsync("ContentZone", new { zoneName = "Right" })
+        </div>
+    </div>
+</div>

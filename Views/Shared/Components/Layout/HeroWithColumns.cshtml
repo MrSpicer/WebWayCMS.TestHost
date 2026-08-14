@@ -1,0 +1,29 @@
+@*
+    Hero with Columns Layout
+    ┌─────────────────────────┐
+    │      Hero Section       │
+    ├────────┬────────┬────────┤
+    │ Col1(4)│ Col2(4)│ Col3(4)│
+    └────────┴────────┴────────┘
+
+    Use case: Marketing pages, home pages, product pages
+    Mobile: Hero stays full-width, columns stack
+*@
+
+<div class="container py-5">
+    @await Component.InvokeAsync("ContentZone", new { zoneName = "Hero" })
+</div>
+
+<div class="container py-5">
+    <div class="row">
+        <div class="col-md-4">
+            @await Component.InvokeAsync("ContentZone", new { zoneName = "Column1" })
+        </div>
+        <div class="col-md-4">
+            @await Component.InvokeAsync("ContentZone", new { zoneName = "Column2" })
+        </div>
+        <div class="col-md-4">
+            @await Component.InvokeAsync("ContentZone", new { zoneName = "Column3" })
+        </div>
+    </div>
+</div>
