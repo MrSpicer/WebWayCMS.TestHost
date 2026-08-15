@@ -4,7 +4,7 @@ using WebWayCMS.Logging;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddWebWayCms(builder.Configuration);
-builder.Host.UseCmsSerilog(builder.Configuration);
+builder.Host.UseCmsSerilog();
 
 var mvc = builder.Services.AddControllersWithViews();
 if (builder.Environment.IsDevelopment())
