@@ -1,0 +1,30 @@
+@model WebWayCMS.TestHost.Models.Faq.FaqDetailViewModel
+@{
+    var c = Model.Configuration;
+    var routeData = Context.Items["CMS:RouteData"] as WebWayCMS.Data.Models.CMSRouteDTO;
+    var backUrl = "/";
+    if (routeData != null)
+    {
+        var pattern = routeData.Pattern ?? string.Empty;
+        var braceIdx = pattern.IndexOf('{');
+        if (braceIdx >= 0)
+            pattern = pattern.Substring(0, braceIdx);
+        pattern = pattern.TrimEnd('/');
+        backUrl = string.IsNullOrEmpty(pattern) ? "/" : pattern;
+    }
+}
+<div class="faq-detail" data-testid="faq-detail" data-view="Default" data-slug="@Model.Slug" data-source="@Model.Source"
+     data-cfg-viewname="@c.ViewName" data-cfg-faqid="@c.FaqId" data-cfg-showbacklink="@(c.ShowBackLink ? "true" : "false")"
+     data-cfg-backlinktext="@c.BackLinkText">
+    @if (Model.Faq != null)
+    {
+        <h2 class="faq-detail-title">@Model.Faq.Title</h2>
+        <h3 class="faq-detail-question">@Model.Faq.Question</h3>
+        <div class="faq-detail-answer">@Model.Faq.Answer</div>
+    }
+
+    @if (c.ShowBackLink)
+    {
+        <p><a class="faq-detail-back" href="@backUrl">@(c.BackLinkText ?? "Back")</a></p>
+    }
+</div>

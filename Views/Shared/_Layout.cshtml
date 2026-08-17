@@ -39,6 +39,7 @@
     <footer class="border-top footer text-muted">
         <div class="container">
             &copy; 2026 - Integration-Host
+            @await Component.InvokeAsync("ContentZone", new { zoneName = "SiteFooter", IsGlobal = true })
         </div>
     </footer>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>

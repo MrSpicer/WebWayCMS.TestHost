@@ -4,6 +4,7 @@ using WebWayCMS.ContentZones;
 using WebWayCMS.Controllers.Admin.Handlers;
 using WebWayCMS.Data.DbContexts;
 using WebWayCMS.Data.Services;
+using WebWayCMS.Interfaces;
 using WebWayCMS.Mapping;
 
 using WebWayCMS.TestHost.Data;
@@ -34,6 +35,7 @@ public sealed class ExtensibilityDiagnostics
         results.Add(CheckHandlerInRegistry(sp));
         results.Add(CheckMapper(sp));
         results.Add(CheckWidgetSeeded(sp));
+        results.Add(CheckRoutableWidgetsRegistered(sp));
         results.Add(CheckRouteSeeded(sp));
 
         var passed = results.Count(r => r.Passed);
@@ -161,14 +163,50 @@ public sealed class ExtensibilityDiagnostics
         try
         {
             var registry = sp.GetRequiredService<IWidgetRegistry>();
-            var widget = registry.GetByName("FaqList");
-            return widget != null
-                ? new CheckResult("widget_seeded", true, widget.DisplayName)
-                : new CheckResult("widget_seeded", false, "FaqList widget not seeded");
+            var required = new[] { "FaqList", "FaqCount", "FaqDetail", "FaqTopic" };
+            var infos = required.ToDictionary(
+                name => name,
+                name => registry.GetByName(name),
+                StringComparer.OrdinalIgnoreCase);
+
+            var missing = infos.Where(kv => kv.Value == null).Select(kv => kv.Key).ToList();
+            if (missing.Count > 0)
+                return new CheckResult("widget_seeded", false, $"Missing widgets: {string.Join(", ", missing)}");
+
+            var faqList = infos["FaqList"]!;
+            var faqCount = infos["FaqCount"]!;
+
+            var listHasProps = faqList.Properties.Count > 0;
+            var countHasNoProps = faqCount.Properties.Count == 0;
+
+            return listHasProps && countHasNoProps
+                ? new CheckResult("widget_seeded", true, $"FaqList props={faqList.Properties.Count}, FaqCount props={faqCount.Properties.Count}")
+                : new CheckResult("widget_seeded", false, $"FaqList props={faqList.Properties.Count} (want >0), FaqCount props={faqCount.Properties.Count} (want 0)");
         }
         catch (Exception ex)
         {
             return new CheckResult("widget_seeded", false, ex.Message);
+        }
+    }
+
+    private static CheckResult CheckRoutableWidgetsRegistered(IServiceProvider sp)
+    {
+        try
+        {
+            var names = sp.GetServices<IRoutableViewComponent>()
+                .Select(w => w.ComponentName)
+                .ToHashSet(StringComparer.OrdinalIgnoreCase);
+
+            var hasDetail = names.Contains("FaqDetail");
+            var hasTopic = names.Contains("FaqTopic");
+
+            return hasDetail && hasTopic
+                ? new CheckResult("routable_widgets_registered", true, string.Join(", ", names))
+                : new CheckResult("routable_widgets_registered", false, $"FaqDetail={hasDetail}, FaqTopic={hasTopic}, all=[{string.Join(", ", names)}]");
+        }
+        catch (Exception ex)
+        {
+            return new CheckResult("routable_widgets_registered", false, ex.Message);
         }
     }
 

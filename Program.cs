@@ -1,10 +1,12 @@
 using WebWayCMS;
 using WebWayCMS.Controllers.Admin.Handlers;
+using WebWayCMS.Interfaces;
 using WebWayCMS.Logging;
 
 using WebWayCMS.TestHost.Data;
 using WebWayCMS.TestHost.Diagnostics;
 using WebWayCMS.TestHost.Models.Faq;
+using WebWayCMS.TestHost.ViewComponents;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,6 +22,13 @@ builder.Services.AddWebWayCms(builder.Configuration, cms =>
 
 builder.Services.AddScoped<FaqModel>();
 builder.Services.AddScoped<IAdminCrudHandler>(sp => sp.GetRequiredService<FaqModel>());
+
+// Routable widgets are collected through IEnumerable<IRoutableViewComponent>, so each one needs an
+// explicit registration alongside its concrete ViewComponent registration.
+builder.Services.AddScoped<FaqDetailViewComponent>();
+builder.Services.AddScoped<IRoutableViewComponent>(sp => sp.GetRequiredService<FaqDetailViewComponent>());
+builder.Services.AddScoped<FaqTopicViewComponent>();
+builder.Services.AddScoped<IRoutableViewComponent>(sp => sp.GetRequiredService<FaqTopicViewComponent>());
 
 builder.Host.UseCmsSerilog();
 

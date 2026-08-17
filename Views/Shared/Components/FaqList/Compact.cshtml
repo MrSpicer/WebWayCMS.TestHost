@@ -1,0 +1,31 @@
+@model WebWayCMS.TestHost.Models.Faq.FaqListViewModel
+@{
+    var c = Model.Configuration;
+}
+<div class="faq-list faq-list-compact" data-testid="faq-list" data-view="Compact" data-faq-count="@Model.Faqs.Count"
+     data-cfg-heading="@c.Heading" data-cfg-intro="@c.Intro" data-cfg-footnote="@c.Footnote"
+     data-cfg-maxitems="@c.MaxItems" data-cfg-showanswers="@(c.ShowAnswers ? "true" : "false")"
+     data-cfg-sortorder="@c.SortOrder" data-cfg-anchorslug="@c.AnchorSlug" data-cfg-accentcolor="@c.AccentColor"
+     data-cfg-moreurl="@c.MoreUrl" data-cfg-contactemail="@c.ContactEmail" data-cfg-effectivedate="@WebWayCMS.Forms.FormValueFormatter.FormatDateOnly(c.EffectiveDate)"
+     data-cfg-reviewedat="@WebWayCMS.Forms.FormValueFormatter.FormatDateTime(c.ReviewedAt)" data-cfg-featuredfaqid="@c.FeaturedFaqId" data-cfg-viewname="@c.ViewName"
+     data-cfg-detailpagecontroller="@c.DetailPageController" data-cfg-testmarker="@c.TestMarker"
+     id="@c.AnchorSlug">
+    @if (!string.IsNullOrWhiteSpace(c.Heading))
+    {
+        <h2 class="faq-list-heading">@c.Heading</h2>
+    }
+
+    @if (Model.Faqs.Count == 0)
+    {
+        <div class="faq-list-empty" data-testid="faq-list-empty">No FAQs found.</div>
+    }
+    else
+    {
+        <ul class="faq-list-links">
+            @foreach (var faq in Model.Faqs)
+            {
+                <li><a href="#@faq.Slug">@faq.Question</a></li>
+            }
+        </ul>
+    }
+</div>

@@ -1,0 +1,52 @@
+@model WebWayCMS.TestHost.Models.Faq.FaqListViewModel
+@{
+    var c = Model.Configuration;
+    var accordionId = "faq-accordion-" + Guid.NewGuid().ToString("N");
+}
+<div class="faq-list faq-list-accordion" data-testid="faq-list" data-view="Accordion" data-faq-count="@Model.Faqs.Count"
+     data-cfg-heading="@c.Heading" data-cfg-intro="@c.Intro" data-cfg-footnote="@c.Footnote"
+     data-cfg-maxitems="@c.MaxItems" data-cfg-showanswers="@(c.ShowAnswers ? "true" : "false")"
+     data-cfg-sortorder="@c.SortOrder" data-cfg-anchorslug="@c.AnchorSlug" data-cfg-accentcolor="@c.AccentColor"
+     data-cfg-moreurl="@c.MoreUrl" data-cfg-contactemail="@c.ContactEmail" data-cfg-effectivedate="@WebWayCMS.Forms.FormValueFormatter.FormatDateOnly(c.EffectiveDate)"
+     data-cfg-reviewedat="@WebWayCMS.Forms.FormValueFormatter.FormatDateTime(c.ReviewedAt)" data-cfg-featuredfaqid="@c.FeaturedFaqId" data-cfg-viewname="@c.ViewName"
+     data-cfg-detailpagecontroller="@c.DetailPageController" data-cfg-testmarker="@c.TestMarker"
+     id="@c.AnchorSlug">
+    @if (!string.IsNullOrWhiteSpace(c.Heading))
+    {
+        <h2 class="faq-list-heading">@c.Heading</h2>
+    }
+
+    @if (Model.Faqs.Count == 0)
+    {
+        <div class="faq-list-empty" data-testid="faq-list-empty">No FAQs found.</div>
+    }
+    else
+    {
+        <div class="accordion" id="@accordionId">
+            @for (var i = 0; i < Model.Faqs.Count; i++)
+            {
+                var faq = Model.Faqs[i];
+                var headingId = $"{accordionId}-h{i}";
+                var collapseId = $"{accordionId}-c{i}";
+                <div class="accordion-item">
+                    <h3 class="accordion-header" id="@headingId">
+                        <button class="accordion-button @(i == 0 ? string.Empty : "collapsed")" type="button"
+                                data-bs-toggle="collapse" data-bs-target="#@collapseId" aria-expanded="@(i == 0 ? "true" : "false")"
+                                aria-controls="@collapseId">
+                            @faq.Question
+                        </button>
+                    </h3>
+                    <div id="@collapseId" class="accordion-collapse collapse @(i == 0 ? "show" : string.Empty)"
+                         aria-labelledby="@headingId" data-bs-parent="#@accordionId">
+                        <div class="accordion-body">
+                            @if (c.ShowAnswers)
+                            {
+                                @faq.Answer
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>

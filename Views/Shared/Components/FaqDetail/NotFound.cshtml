@@ -1,0 +1,9 @@
+@model WebWayCMS.TestHost.Models.Faq.FaqDetailViewModel
+@{
+    var c = Model.Configuration;
+}
+<div class="faq-detail faq-detail-notfound" data-testid="faq-detail" data-view="NotFound" data-slug="@Model.Slug" data-source="@Model.Source"
+     data-cfg-viewname="@c.ViewName" data-cfg-faqid="@c.FaqId" data-cfg-showbacklink="@(c.ShowBackLink ? "true" : "false")"
+     data-cfg-backlinktext="@c.BackLinkText">
+    <div class="notification is-warning" data-testid="faq-detail-not-found">FAQ not found.</div>
+</div>

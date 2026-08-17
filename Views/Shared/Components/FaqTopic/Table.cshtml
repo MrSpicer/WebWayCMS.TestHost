@@ -1,0 +1,32 @@
+@model WebWayCMS.TestHost.Models.Faq.FaqTopicViewModel
+@{
+    var c = Model.Configuration;
+}
+<div class="faq-topic faq-topic-table" data-testid="faq-topic" data-view="Table" data-topic="@Model.Topic" data-page="@Model.Page"
+     data-page-size="@Model.PageSize" data-match-count="@Model.MatchCount"
+     data-cfg-pagesize="@c.PageSize" data-cfg-viewname="@c.ViewName" data-cfg-emptymessage="@c.EmptyMessage">
+    @if (Model.Faqs.Count == 0)
+    {
+        <div class="faq-topic-empty" data-testid="faq-topic-empty">@(c.EmptyMessage ?? "No FAQs for this topic.")</div>
+    }
+    else
+    {
+        <table class="table faq-topic-table">
+            <thead>
+                <tr>
+                    <th scope="col">Question</th>
+                    <th scope="col">Slug</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var faq in Model.Faqs)
+                {
+                    <tr>
+                        <td>@faq.Question</td>
+                        <td>@faq.Slug</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>

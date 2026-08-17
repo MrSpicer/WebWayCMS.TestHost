@@ -1,0 +1,62 @@
+@model WebWayCMS.TestHost.Models.Faq.FaqListViewModel
+@{
+    var c = Model.Configuration;
+}
+<div class="faq-list" data-testid="faq-list" data-view="Default" data-faq-count="@Model.Faqs.Count"
+     data-cfg-heading="@c.Heading" data-cfg-intro="@c.Intro" data-cfg-footnote="@c.Footnote"
+     data-cfg-maxitems="@c.MaxItems" data-cfg-showanswers="@(c.ShowAnswers ? "true" : "false")"
+     data-cfg-sortorder="@c.SortOrder" data-cfg-anchorslug="@c.AnchorSlug" data-cfg-accentcolor="@c.AccentColor"
+     data-cfg-moreurl="@c.MoreUrl" data-cfg-contactemail="@c.ContactEmail" data-cfg-effectivedate="@WebWayCMS.Forms.FormValueFormatter.FormatDateOnly(c.EffectiveDate)"
+     data-cfg-reviewedat="@WebWayCMS.Forms.FormValueFormatter.FormatDateTime(c.ReviewedAt)" data-cfg-featuredfaqid="@c.FeaturedFaqId" data-cfg-viewname="@c.ViewName"
+     data-cfg-detailpagecontroller="@c.DetailPageController" data-cfg-testmarker="@c.TestMarker"
+     id="@c.AnchorSlug">
+    @if (!string.IsNullOrWhiteSpace(c.Heading))
+    {
+        <h2 class="faq-list-heading">@c.Heading</h2>
+    }
+
+    @if (!string.IsNullOrWhiteSpace(c.Intro))
+    {
+        <p class="faq-list-intro">@c.Intro</p>
+    }
+
+    @if (Model.FeaturedFaq != null)
+    {
+        <div class="faq-list-featured" data-testid="faq-list-featured">
+            <h3>@Model.FeaturedFaq.Question</h3>
+            @if (c.ShowAnswers)
+            {
+                <p>@Model.FeaturedFaq.Answer</p>
+            }
+        </div>
+    }
+
+    @if (Model.Faqs.Count == 0)
+    {
+        <div class="faq-list-empty" data-testid="faq-list-empty">No FAQs found.</div>
+    }
+    else
+    {
+        <dl class="faq-list-definitions">
+            @foreach (var faq in Model.Faqs)
+            {
+                <dt>@faq.Question</dt>
+                @if (c.ShowAnswers)
+                {
+                    <dd>@faq.Answer</dd>
+                }
+            }
+        </dl>
+    }
+
+    @if (!string.IsNullOrWhiteSpace(c.Footnote))
+    {
+        @* TODO: @Html.Raw(c.Footnote) would be a live XSS sink — widget config is not sanitized on save. *@
+        <p class="faq-list-footnote">@c.Footnote</p>
+    }
+
+    @if (!string.IsNullOrWhiteSpace(c.MoreUrl))
+    {
+        <p><a class="faq-list-more" href="@c.MoreUrl">More</a></p>
+    }
+</div>
