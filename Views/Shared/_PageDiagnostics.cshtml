@@ -1,0 +1,14 @@
+@model string
+@{
+    var pageData = Context.Items["CMS:PageData"] as PageDTO;
+    var routeData = Context.Items["CMS:RouteData"] as CMSRouteDTO;
+}
+<dl class="row small" data-testid="page-diagnostics">
+    <dt class="col-4">Active view</dt>   <dd class="col-8" data-testid="active-view">@Model</dd>
+    <dt class="col-4">Controller</dt>    <dd class="col-8" data-testid="page-controller">@pageData?.ControllerName</dd>
+    <dt class="col-4">Stored ViewName</dt><dd class="col-8" data-testid="page-viewname">@(pageData?.ViewName ?? "(none)")</dd>
+    <dt class="col-4">Slug</dt>          <dd class="col-8" data-testid="page-slug">@pageData?.Version.Slug</dd>
+    <dt class="col-4">Node id</dt>       <dd class="col-8" data-testid="page-node-id">@pageData?.Version.Node.Id</dd>
+    <dt class="col-4">Version</dt>       <dd class="col-8" data-testid="page-version">@pageData?.Version.VersionNumber (@pageData?.Version.State)</dd>
+    <dt class="col-4">Route pattern</dt> <dd class="col-8" data-testid="route-pattern">@routeData?.Pattern</dd>
+</dl>

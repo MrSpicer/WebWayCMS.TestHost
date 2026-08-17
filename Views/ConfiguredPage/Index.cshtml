@@ -1,0 +1,31 @@
+@model WebWayCMS.TestHost.Pages.ConfiguredPageConfiguration
+@{
+    var cfg = Model;
+}
+<div data-testid="configured-page"
+     data-cfg-heading="@cfg.Heading" data-cfg-intro="@cfg.Intro" data-cfg-body="@cfg.Body"
+     data-cfg-maxitems="@cfg.MaxItems" data-cfg-showdetails="@(cfg.ShowDetails ? "true" : "false")"
+     data-cfg-sortorder="@cfg.SortOrder" data-cfg-anchorslug="@cfg.AnchorSlug" data-cfg-accentcolor="@cfg.AccentColor"
+     data-cfg-moreurl="@cfg.MoreUrl" data-cfg-contactemail="@cfg.ContactEmail"
+     data-cfg-effectivedate="@WebWayCMS.Forms.FormValueFormatter.FormatDateOnly(cfg.EffectiveDate)"
+     data-cfg-reviewedat="@WebWayCMS.Forms.FormValueFormatter.FormatDateTime(cfg.ReviewedAt)"
+     data-cfg-featuredfaqid="@cfg.FeaturedFaqId" data-cfg-viewname="@cfg.ViewName"
+     data-cfg-detailpagecontroller="@cfg.DetailPageController" data-cfg-testmarker="@cfg.TestMarker"
+     id="@cfg.AnchorSlug">
+    <h1>@cfg.Heading</h1>
+
+    @if (!string.IsNullOrWhiteSpace(cfg.Intro))
+    {
+        <p>@cfg.Intro</p>
+    }
+
+    @if (!string.IsNullOrWhiteSpace(cfg.Body))
+    {
+        @* TODO: Page-config rich text is NOT sanitized on save — RichTextSanitizer runs only over
+           top-level string properties at AdminCrudModel.SaveUpsertAsync, and the page's rich-text
+           config lives inside the ConfigurationJson hidden string, so it is stored raw. This is the
+           same class of gap as the widget-config one (docs/architecture/04-content-zone-framework.md
+           §10.1); rendered with @Html.Raw deliberately to expose it. *@
+        <div>@Html.Raw(cfg.Body)</div>
+    }
+</div>

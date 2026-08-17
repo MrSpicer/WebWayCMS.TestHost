@@ -1,0 +1,54 @@
+@model WebWayCMS.TestHost.Pages.PageTestHubConfiguration
+@{
+    ViewData["Title"] = "Page Controller Tests";
+    var activeView = "Index";
+}
+<div data-testid="page-test-hub">
+    <div class="text-center mb-4">
+        <h1 class="display-4">Page Controller Tests</h1>
+        <p class="lead">One card per page type. Create each page at <code>/wadmin/pages</code> to light it up.</p>
+    </div>
+
+    @if (Model.ShowDiagnostics)
+    {
+        @await Html.PartialAsync("_PageDiagnostics", activeView)
+    }
+
+    @if (!string.IsNullOrWhiteSpace(Model.Intro))
+    {
+        @* TODO: Page-config rich text is NOT sanitized on save (see ConfiguredPage/Index.cshtml). *@
+        <div class="mb-4">@Html.Raw(Model.Intro)</div>
+    }
+
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        <div class="col">
+            <div class="card h-100 border-success">
+                <div class="card-header bg-success text-white"><strong>Zone Showcase Page</strong></div>
+                <div class="card-body">
+                    <p class="card-text">Four views over one page — page-scoped, global, and nested zones, plus view-switch persistence.</p>
+                    <p class="mb-1">Slug <code>zones</code> · View <code>TwoColumn</code></p>
+                    <p class="mb-1">Slug <code>zones-landing</code> · View <code>Landing</code></p>
+                </div>
+                <div class="card-footer">
+                    <a href="/zones" class="btn btn-success btn-sm me-1">TwoColumn</a>
+                    <a href="/zones-landing" class="btn btn-outline-success btn-sm">Landing</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col">
+            <div class="card h-100 border-info">
+                <div class="card-header bg-info text-white"><strong>Configured Page</strong></div>
+                <div class="card-body">
+                    <p class="card-text">One config field per <code>EditorType</code>, echoed back as <code>data-cfg-*</code> attributes.</p>
+                    <p class="mb-1">Slug <code>configured</code></p>
+                </div>
+                <div class="card-footer"><a href="/configured" class="btn btn-info btn-sm">Test It</a></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-4" data-testid="zone-hub-notice">
+        @await Component.InvokeAsync("ContentZone", new { zoneName = "HubNotice" })
+    </div>
+</div>

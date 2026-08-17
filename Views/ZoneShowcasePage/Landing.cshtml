@@ -1,0 +1,24 @@
+@model WebWayCMS.TestHost.Pages.ZoneShowcasePageConfiguration
+@{
+    var activeView = ViewData["ActiveView"] as string ?? "Landing";
+}
+<div data-testid="showcase-view-landing">
+    <div class="p-5 bg-light rounded-3 mb-4" data-testid="zone-landing-hero">
+        <h1 class="display-4">@(string.IsNullOrWhiteSpace(Model.Heading) ? "Zone Showcase" : Model.Heading)</h1>
+        @if (Model.ShowDiagnostics)
+        {
+            @await Html.PartialAsync("_PageDiagnostics", activeView)
+        }
+        @await Component.InvokeAsync("ContentZone", new { zoneName = "LandingHero" })
+    </div>
+
+    <div class="row my-4">
+        <div class="col-12" data-testid="zone-page-main">
+            @await Component.InvokeAsync("ContentZone", new { zoneName = "PageMain" })
+        </div>
+    </div>
+
+    <div data-testid="zone-landing-cta">
+        @await Component.InvokeAsync("ContentZone", new { zoneName = "LandingCta" })
+    </div>
+</div>

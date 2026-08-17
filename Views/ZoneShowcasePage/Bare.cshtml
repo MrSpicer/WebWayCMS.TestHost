@@ -1,0 +1,12 @@
+@model WebWayCMS.TestHost.Pages.ZoneShowcasePageConfiguration
+@{
+    var activeView = ViewData["ActiveView"] as string ?? "Bare";
+}
+<div data-testid="showcase-view-bare">
+    <h1>@(string.IsNullOrWhiteSpace(Model.Heading) ? "Zone Showcase" : Model.Heading)</h1>
+    @if (Model.ShowDiagnostics)
+    {
+        @await Html.PartialAsync("_PageDiagnostics", activeView)
+    }
+    <p class="text-muted">This view renders no content zones.</p>
+</div>
