@@ -9,10 +9,17 @@
      data-cfg-moreurl="@c.MoreUrl" data-cfg-contactemail="@c.ContactEmail" data-cfg-effectivedate="@WebWayCMS.Forms.FormValueFormatter.FormatDateOnly(c.EffectiveDate)"
      data-cfg-reviewedat="@WebWayCMS.Forms.FormValueFormatter.FormatDateTime(c.ReviewedAt)" data-cfg-featuredfaqid="@c.FeaturedFaqId" data-cfg-viewname="@c.ViewName"
      data-cfg-detailpagecontroller="@c.DetailPageController" data-cfg-testmarker="@c.TestMarker"
+     data-cfg-headingicon="@c.HeadingIcon"
      id="@c.AnchorSlug">
     @if (!string.IsNullOrWhiteSpace(c.Heading))
     {
-        <h2 class="faq-list-heading">@c.Heading</h2>
+        <h2 class="faq-list-heading">
+            @if (!string.IsNullOrWhiteSpace(c.HeadingIcon))
+            {
+                <i class="@c.HeadingIcon"></i>
+            }
+            @c.Heading
+        </h2>
     }
 
     @if (Model.Faqs.Count == 0)
@@ -24,7 +31,7 @@
         <ul class="faq-list-links">
             @foreach (var faq in Model.Faqs)
             {
-                <li><a href="#@faq.Slug">@faq.Question</a></li>
+                <li data-faq-rating="@faq.HelpfulnessRating"><a href="#@faq.Slug">@faq.Question</a></li>
             }
         </ul>
     }

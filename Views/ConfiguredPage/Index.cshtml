@@ -11,8 +11,15 @@
      data-cfg-reviewedat="@WebWayCMS.Forms.FormValueFormatter.FormatDateTime(cfg.ReviewedAt)"
      data-cfg-featuredfaqid="@cfg.FeaturedFaqId" data-cfg-viewname="@cfg.ViewName"
      data-cfg-detailpagecontroller="@cfg.DetailPageController" data-cfg-testmarker="@cfg.TestMarker"
+     data-cfg-headingicon="@cfg.HeadingIcon"
      id="@cfg.AnchorSlug">
-    <h1>@cfg.Heading</h1>
+    <h1>
+        @if (!string.IsNullOrWhiteSpace(cfg.HeadingIcon))
+        {
+            <i class="@cfg.HeadingIcon"></i>
+        }
+        @cfg.Heading
+    </h1>
 
     @if (!string.IsNullOrWhiteSpace(cfg.Intro))
     {

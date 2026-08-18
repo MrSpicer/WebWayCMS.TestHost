@@ -42,7 +42,7 @@ FAQs and the page through the admin UI itself.
 
 | Widget | Type | Category | What it covers |
 |---|---|---|---|
-| `FaqList` | non-routing | `FAQ Test` | full config matrix — one property per `EditorType` (all 15), `EntityPicker` against the host `faqs` type, `ViewPicker` over 3 views |
+| `FaqList` | non-routing | `FAQ Test` | full config matrix — one property per `EditorType` (all 15), `EntityPicker` against the host `faqs` type, `ViewPicker` over 3 views, plus a `HeadingIcon` property on the host-contributed `IconPicker` form component (17 properties total) |
 | `FaqCount` | non-routing | `FAQ Test` | the zero-config path (`HasConfiguration == false`, modal renders no fields) |
 | `FaqDetail` | routing (1 route) | `FAQ Test Routing` | `{slug}` route, slug → `GetBySlugAsync` resolution |
 | `FaqTopic` | routing (2 routes) | `FAQ Test Routing` | `topics/{topic}` + `topics/{topic}/page/{page:int}` — multi-route, literal segments, inline `int` constraint |
@@ -58,8 +58,13 @@ in the `IRoutableViewComponent` collection (`widget_seeded`, `routable_widgets_r
 
 ### Manual walkthrough
 
-Run against a **fresh** database (widget seeding only inserts, so a previously-seeded
-configuration-less `FaqList` row would mask the new `FaqListConfiguration`):
+Run against a **fresh** database. Dropping the volume (`-v`) is **mandatory**: the previously
+committed migration `20260817014733_AddFaqs` was replaced by `20260817185956_AddFaqs`, so a volume
+that ran the old one has it in the host history table and the new ID's `CreateTable("Faqs")` hits
+Postgres `42P07 relation "Faqs" already exists` at startup. (Widget seeding also only inserts, so a
+previously-seeded configuration-less `FaqList` row would mask the new `FaqListConfiguration`.)
+`StartIntegrationHost.sh` only offers to tear down when a stack is *already running*, and defaults to
+**N** — a stopped-but-not-`-v`-torn-down stack reaches the `42P07` failure with no prompt at all.
 
 ```bash
 ./scripts/TearDownIntegrationhost.sh -v    # drop the DB volume
@@ -80,9 +85,11 @@ Then at `http://localhost:45847`:
    the same time materialises the global `SiteFooter` zone needed in step 11.
 6. Edit the `faq-test` page's `Main` zone (`/wadmin/contentzones` → the page's `Main` zone → zone-edit):
    - add **FaqCount** — the modal shows no fields; the widget renders a count;
-   - add **FaqList** — the modal shows all 15 fields; confirm the entity picker for *Featured FAQ*
+   - add **FaqList** — the modal shows all 16 fields; confirm the entity picker for *Featured FAQ*
      populates from `/wadmin/faqs/api/list`, pick each `ViewName` in turn and confirm the render
-     changes, and confirm every value survives a re-open of the edit modal;
+     changes, confirm the *Heading Icon* field renders as a `<select>` + server-rendered preview (the
+     host-contributed `IconPicker` form component), and confirm every value survives a re-open of the
+     edit modal;
    - add **FaqDetail** and **FaqTopic**.
 7. `/wadmin/routes` — three widget routes exist, prefixed by the page route:
    `/faq-test/{slug:regex(^[a-z0-9-]+$)}`, `/faq-test/topics/{topic}`,
@@ -111,6 +118,39 @@ form submitted), `data-testid="faq-count"` (with `data-count`), `data-testid="fa
 is in the URL and no fallback FAQ is configured), and `data-testid="faq-topic"` (with `data-topic`,
 `data-page`, `data-page-size` (the *effective* size, after the fallback), `data-match-count`).
 
+Every element that represents one FAQ also carries `data-faq-rating` — the `HelpfulnessRating` column
+on the host `faqs` table, edited through the host-contributed `StarRating` form component. It is on the
+per-item element in each list view (`<dt>` in `FaqList/Default`, `.accordion-item` in `Accordion`, `<li>`
+in `Compact` and `FaqTopic/Default`, `<tr>` in `FaqTopic/Table`), on `.faq-list-featured`, and on the
+`FaqDetail` root (omitted there when no FAQ resolved). That closes the loop the `data-cfg-*` attributes
+close for widget config: it is the only public-side surface proving a *content-type* field round-tripped
+through the custom form component to the database and back.
+
+## Host-Contributed Form Components
+
+Two `[CMSFormComponent]` ViewComponents in this project exercise the host form-component seam
+(`WebWayCMS.TestHost/ViewComponents/Forms/`), seeded automatically by `CmsFormComponentSeeder` — no
+`Program.cs` registration needed, since the host already calls
+`cms.AddApplicationAssembly(typeof(FaqDTO).Assembly)`. Both are selected by name
+(`[FormProperty(FormComponent = "…")]`), not by `EditorType`.
+
+| Component | Used by | Binding | Shape |
+|---|---|---|---|
+| `FormStarRating` (registry name `StarRating`) | `faqs` upsert form, field `HelpfulnessRating` (`int`, 0-5) | Model-bound | Six radios sharing one `name` |
+| `FormIconPicker` (registry name `IconPicker`) | `FaqList` widget config and `ConfiguredPage` page config, field `HeadingIcon` (`string?`) | Model- or JSON-bound | One `<select>` + a server-rendered `<i class="…">` preview |
+
+This split is deliberate, not arbitrary: `form-components.js` serializes every `[data-prop]` element
+in a JSON-bound (widget/page) configuration sub-form, and `ContentZoneModel.DeserializePropertiesToConfigType`
+deserializes with no tolerance for a malformed shape — a throw there silently drops the *entire* saved
+configuration. A control that emits several inputs sharing one `name` (a radio group, like
+`StarRating`) is therefore safe only on a **model-bound** form; `IconPicker` emits exactly one
+`data-prop` element, so it works in both places. Both components render static HTML only (no
+JavaScript, no CSP changes) — `IconPicker`'s preview reflects the value as of the last save/reload,
+not a live update as the `<select>` changes.
+
+`GET /_diag/extensibility`'s `form_components_seeded` check asserts both registry rows exist with the
+expected `ViewComponentName`.
+
 ## Page Controller Tests
 
 Three host-owned `[PageController]` page types exercise the editor-managed page pipeline —
@@ -124,7 +164,7 @@ change and no DI registration** is needed.
 |---|---|---|
 | `PageTestHub` | `Index` | Index of the whole suite (a live specimen: `_PageDiagnostics` + a `HubNotice` zone) |
 | `ZoneShowcasePage` | `Index`, `TwoColumn`, `Landing`, `Bare` | Multiple views over one page; page-scoped vs global zones; nested zones (drop a `Layout` widget into `PageMain`); view-switch persistence; zero-zone view |
-| `ConfiguredPage` | `Index` | One config field per `EditorType` (16), echoed back as `data-cfg-*` attributes to prove the `ConfigurationJson` → `CMS:PageConfig` round-trip |
+| `ConfiguredPage` | `Index` | One config field per `EditorType` (16) plus a `HeadingIcon` field on the host `IconPicker` component (17 total), echoed back as `data-cfg-*` attributes to prove the `ConfigurationJson` → `CMS:PageConfig` round-trip |
 
 `ZoneShowcasePage` slot names are prefixed `Page*` (`PageHeader`, `PageMain`, `PageAside`,
 `PageFooter`) on purpose: the host `Layout` widget renders *nested* zones named

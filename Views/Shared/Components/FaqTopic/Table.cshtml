@@ -21,7 +21,7 @@
             <tbody>
                 @foreach (var faq in Model.Faqs)
                 {
-                    <tr>
+                    <tr data-faq-rating="@faq.HelpfulnessRating">
                         <td>@faq.Question</td>
                         <td>@faq.Slug</td>
                     </tr>

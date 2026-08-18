@@ -1,0 +1,9 @@
+@model WebWayCMS.Forms.FormFieldContext
+@{
+    var current = Math.Clamp(Model.Value is int i ? i : 0, 0, 5);
+    var stars = new string('★', current) + new string('☆', 5 - current);
+}
+<dl>
+    <dt class="has-text-grey is-size-7">@Model.Label</dt>
+    <dd data-testid="star-rating-read">@stars</dd>
+</dl>

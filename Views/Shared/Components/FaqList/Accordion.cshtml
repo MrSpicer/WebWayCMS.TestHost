@@ -10,10 +10,17 @@
      data-cfg-moreurl="@c.MoreUrl" data-cfg-contactemail="@c.ContactEmail" data-cfg-effectivedate="@WebWayCMS.Forms.FormValueFormatter.FormatDateOnly(c.EffectiveDate)"
      data-cfg-reviewedat="@WebWayCMS.Forms.FormValueFormatter.FormatDateTime(c.ReviewedAt)" data-cfg-featuredfaqid="@c.FeaturedFaqId" data-cfg-viewname="@c.ViewName"
      data-cfg-detailpagecontroller="@c.DetailPageController" data-cfg-testmarker="@c.TestMarker"
+     data-cfg-headingicon="@c.HeadingIcon"
      id="@c.AnchorSlug">
     @if (!string.IsNullOrWhiteSpace(c.Heading))
     {
-        <h2 class="faq-list-heading">@c.Heading</h2>
+        <h2 class="faq-list-heading">
+            @if (!string.IsNullOrWhiteSpace(c.HeadingIcon))
+            {
+                <i class="@c.HeadingIcon"></i>
+            }
+            @c.Heading
+        </h2>
     }
 
     @if (Model.Faqs.Count == 0)
@@ -28,7 +35,7 @@
                 var faq = Model.Faqs[i];
                 var headingId = $"{accordionId}-h{i}";
                 var collapseId = $"{accordionId}-c{i}";
-                <div class="accordion-item">
+                <div class="accordion-item" data-faq-rating="@faq.HelpfulnessRating">
                     <h3 class="accordion-header" id="@headingId">
                         <button class="accordion-button @(i == 0 ? string.Empty : "collapsed")" type="button"
                                 data-bs-toggle="collapse" data-bs-target="#@collapseId" aria-expanded="@(i == 0 ? "true" : "false")"

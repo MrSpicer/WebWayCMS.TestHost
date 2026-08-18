@@ -5,7 +5,8 @@ namespace WebWayCMS.TestHost.ViewComponents;
 /// <summary>
 /// Configuration for the <c>FaqList</c> widget. One property per <see cref="EditorType"/> so the
 /// admin "Add Widget" modal exercises every editor in the form system; the entity picker targets the
-/// host <c>faqs</c> content type via the generic entity-picker endpoint fallback.
+/// host <c>faqs</c> content type via the generic entity-picker endpoint fallback. The trailing
+/// <see cref="HeadingIcon"/> property exercises a host-contributed form component instead.
 /// </summary>
 public class FaqListConfiguration
 {
@@ -155,4 +156,13 @@ public class FaqListConfiguration
         FormComponent = "Hidden"
     )]
     public string? TestMarker { get; set; }
+
+    [FormProperty(
+        Label = "Heading Icon",
+        HelpText = "Font Awesome class rendered before the heading.",
+        Order = 17,
+        FormComponent = "IconPicker",
+        DropdownOptions = "fa-solid fa-circle-question:Question mark,fa-solid fa-book:Book,fa-solid fa-lightbulb:Lightbulb,fa-solid fa-star:Star"
+    )]
+    public string? HeadingIcon { get; set; }
 }

@@ -155,4 +155,13 @@ public class ConfiguredPageConfiguration
         FormComponent = "Hidden"
     )]
     public string? TestMarker { get; set; }
+
+    [FormProperty(
+        Label = "Heading Icon",
+        HelpText = "Font Awesome class rendered before the heading.",
+        Order = 17,
+        FormComponent = "IconPicker",
+        DropdownOptions = "fa-solid fa-circle-question:Question mark,fa-solid fa-book:Book,fa-solid fa-lightbulb:Lightbulb,fa-solid fa-star:Star"
+    )]
+    public string? HeadingIcon { get; set; }
 }

@@ -14,7 +14,7 @@
         <ul class="faq-topic-list">
             @foreach (var faq in Model.Faqs)
             {
-                <li><a href="#@faq.Slug">@faq.Question</a></li>
+                <li data-faq-rating="@faq.HelpfulnessRating"><a href="#@faq.Slug">@faq.Question</a></li>
             }
         </ul>
     }

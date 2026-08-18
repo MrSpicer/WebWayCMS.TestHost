@@ -864,6 +864,11 @@ namespace IntegrationHost.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<int>("HelpfulnessRating")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasDefaultValue(0);
+
                     b.Property<string>("Question")
                         .IsRequired()
                         .HasMaxLength(500)

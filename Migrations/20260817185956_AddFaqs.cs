@@ -17,7 +17,8 @@ namespace IntegrationHost.Migrations
                 {
                     VersionId = table.Column<Guid>(type: "uuid", nullable: false),
                     Question = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false),
-                    Answer = table.Column<string>(type: "text", nullable: false)
+                    Answer = table.Column<string>(type: "text", nullable: false),
+                    HelpfulnessRating = table.Column<int>(type: "integer", nullable: false, defaultValue: 0)
                 },
                 constraints: table =>
                 {

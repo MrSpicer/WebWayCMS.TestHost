@@ -20,6 +20,7 @@ public sealed class FaqMappingProfile : Profile
             Slug = s.Version.Slug ?? string.Empty,
             Question = s.Question,
             Answer = s.Answer,
+            HelpfulnessRating = s.HelpfulnessRating,
             PublicationDate = s.Version.PublishStartUtc,
             PublicationEndDate = s.Version.PublishEndUtc,
             IsHidden = s.Version.Node.IsHidden,
@@ -35,6 +36,7 @@ public sealed class FaqMappingProfile : Profile
             Slug = s.Version.Slug ?? string.Empty,
             Question = s.Question,
             Answer = s.Answer,
+            HelpfulnessRating = s.HelpfulnessRating,
             PublicationDate = s.Version.PublishStartUtc,
             PublicationEndDate = s.Version.PublishEndUtc,
             IsHidden = s.Version.Node.IsHidden,
@@ -47,6 +49,7 @@ public sealed class FaqMappingProfile : Profile
         {
             Question = s.Question,
             Answer = s.Answer,
+            HelpfulnessRating = s.HelpfulnessRating,
             Version = new ContentVersion
             {
                 Node = new ContentNode { Id = s.NodeId ?? Guid.Empty, IsHidden = s.IsHidden },

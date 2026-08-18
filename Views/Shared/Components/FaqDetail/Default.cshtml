@@ -14,6 +14,7 @@
     }
 }
 <div class="faq-detail" data-testid="faq-detail" data-view="Default" data-slug="@Model.Slug" data-source="@Model.Source"
+     data-faq-rating="@(Model.Faq?.HelpfulnessRating)"
      data-cfg-viewname="@c.ViewName" data-cfg-faqid="@c.FaqId" data-cfg-showbacklink="@(c.ShowBackLink ? "true" : "false")"
      data-cfg-backlinktext="@c.BackLinkText">
     @if (Model.Faq != null)

@@ -4,6 +4,7 @@ using WebWayCMS.ContentZones;
 using WebWayCMS.Controllers.Admin.Handlers;
 using WebWayCMS.Data.DbContexts;
 using WebWayCMS.Data.Services;
+using WebWayCMS.Forms;
 using WebWayCMS.Interfaces;
 using WebWayCMS.Mapping;
 
@@ -37,6 +38,7 @@ public sealed class ExtensibilityDiagnostics
         results.Add(CheckWidgetSeeded(sp));
         results.Add(CheckRoutableWidgetsRegistered(sp));
         results.Add(CheckRouteSeeded(sp));
+        results.Add(CheckFormComponentsSeeded(sp));
 
         var passed = results.Count(r => r.Passed);
         return Results.Json(new
@@ -223,6 +225,35 @@ public sealed class ExtensibilityDiagnostics
         catch (Exception ex)
         {
             return new CheckResult("route_seeded", false, ex.Message);
+        }
+    }
+
+    private static CheckResult CheckFormComponentsSeeded(IServiceProvider sp)
+    {
+        try
+        {
+            var registry = sp.GetRequiredService<IFormComponentRegistry>();
+            var starRating = registry.GetByName("StarRating");
+            var iconPicker = registry.GetByName("IconPicker");
+
+            var missing = new List<string>();
+            if (starRating == null)
+                missing.Add("StarRating");
+            else if (starRating.ViewComponentName != "FormStarRating")
+                missing.Add($"StarRating.ViewComponentName={starRating.ViewComponentName}");
+
+            if (iconPicker == null)
+                missing.Add("IconPicker");
+            else if (iconPicker.ViewComponentName != "FormIconPicker")
+                missing.Add($"IconPicker.ViewComponentName={iconPicker.ViewComponentName}");
+
+            return missing.Count == 0
+                ? new CheckResult("form_components_seeded", true, "StarRating + IconPicker seeded")
+                : new CheckResult("form_components_seeded", false, $"Missing/mismatched: {string.Join(", ", missing)}");
+        }
+        catch (Exception ex)
+        {
+            return new CheckResult("form_components_seeded", false, ex.Message);
         }
     }
 }

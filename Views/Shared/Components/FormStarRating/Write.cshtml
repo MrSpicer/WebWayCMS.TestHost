@@ -1,0 +1,34 @@
+@model WebWayCMS.Forms.FormFieldContext
+@{
+    var current = Math.Clamp(Model.Value is int i ? i : 0, 0, 5);
+}
+<form-field chrome="none" field="@Model">
+    <fieldset class="field" data-testid="star-rating">
+        <legend class="label">
+            @Model.Label@(Model.IsRequired ? Html.Raw(" <span class=\"has-text-danger\">*</span>") : "")
+        </legend>
+        <div class="control">
+            @for (var n = 0; n <= 5; n++)
+            {
+                var attrs = WebWayCMS.Forms.FormAttributeBuilder.For(Model)
+                    .Attr("type", "radio")
+                    .Attr("name", Model.InputName)
+                    .Attr("id", $"{Model.ElementId}_{n}")
+                    .Attr("value", n.ToString())
+                    .Required()
+                    .Build();
+                if (n == current)
+                {
+                    attrs += " checked";
+                }
+                <input @Html.Raw(attrs) />
+                <label for="@($"{Model.ElementId}_{n}")" data-star="@n">@(n > 0 && n <= current ? "★" : "☆")</label>
+            }
+        </div>
+        @if (!string.IsNullOrEmpty(Model.HelpText))
+        {
+            <p class="help" id="@(Model.ElementId)_help">@Model.HelpText</p>
+        }
+        <span role="alert" data-valmsg-for="@Model.Name" class="has-text-danger"></span>
+    </fieldset>
+</form-field>

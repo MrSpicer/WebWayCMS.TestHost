@@ -12,6 +12,7 @@ public sealed class FaqDTOEntityConfiguration : IEntityTypeConfiguration<FaqDTO>
         entity.ConfigureContentLink();
         entity.Property(e => e.Question).IsRequired().HasMaxLength(500);
         entity.Property(e => e.Answer).IsRequired();
+        entity.Property(e => e.HelpfulnessRating).HasDefaultValue(0);
         entity.ToTable("Faqs");
     }
 }

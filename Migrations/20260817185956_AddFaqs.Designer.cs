@@ -12,7 +12,7 @@ using WebWayCMS.TestHost.Data;
 namespace IntegrationHost.Migrations
 {
     [DbContext(typeof(MySiteMigrationsDbContext))]
-    [Migration("20260817014733_AddFaqs")]
+    [Migration("20260817185956_AddFaqs")]
     partial class AddFaqs
     {
         /// <inheritdoc />
@@ -866,6 +866,11 @@ namespace IntegrationHost.Migrations
                     b.Property<string>("Answer")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<int>("HelpfulnessRating")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasDefaultValue(0);
 
                     b.Property<string>("Question")
                         .IsRequired()

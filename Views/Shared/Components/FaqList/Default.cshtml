@@ -9,10 +9,17 @@
      data-cfg-moreurl="@c.MoreUrl" data-cfg-contactemail="@c.ContactEmail" data-cfg-effectivedate="@WebWayCMS.Forms.FormValueFormatter.FormatDateOnly(c.EffectiveDate)"
      data-cfg-reviewedat="@WebWayCMS.Forms.FormValueFormatter.FormatDateTime(c.ReviewedAt)" data-cfg-featuredfaqid="@c.FeaturedFaqId" data-cfg-viewname="@c.ViewName"
      data-cfg-detailpagecontroller="@c.DetailPageController" data-cfg-testmarker="@c.TestMarker"
+     data-cfg-headingicon="@c.HeadingIcon"
      id="@c.AnchorSlug">
     @if (!string.IsNullOrWhiteSpace(c.Heading))
     {
-        <h2 class="faq-list-heading">@c.Heading</h2>
+        <h2 class="faq-list-heading">
+            @if (!string.IsNullOrWhiteSpace(c.HeadingIcon))
+            {
+                <i class="@c.HeadingIcon"></i>
+            }
+            @c.Heading
+        </h2>
     }
 
     @if (!string.IsNullOrWhiteSpace(c.Intro))
@@ -22,7 +29,7 @@
 
     @if (Model.FeaturedFaq != null)
     {
-        <div class="faq-list-featured" data-testid="faq-list-featured">
+        <div class="faq-list-featured" data-testid="faq-list-featured" data-faq-rating="@Model.FeaturedFaq.HelpfulnessRating">
             <h3>@Model.FeaturedFaq.Question</h3>
             @if (c.ShowAnswers)
             {
@@ -40,7 +47,7 @@
         <dl class="faq-list-definitions">
             @foreach (var faq in Model.Faqs)
             {
-                <dt>@faq.Question</dt>
+                <dt data-faq-rating="@faq.HelpfulnessRating">@faq.Question</dt>
                 @if (c.ShowAnswers)
                 {
                     <dd>@faq.Answer</dd>
