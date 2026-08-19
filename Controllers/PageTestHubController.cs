@@ -9,8 +9,8 @@ namespace WebWayCMS.TestHost.Controllers;
 
 /// <summary>
 /// The hub page type — an index of the whole page-type test suite. It is a page *type*, not a
-/// wired-up route: there is deliberately no navbar link and no seeder, so it only exists once an
-/// operator creates a page with it (slug <c>page-test</c>).
+/// wired-up route: there is no navbar link, and the <c>page-test</c> page itself is created by the
+/// JSON content seeder (see <c>contentseed/pages.json</c>).
 /// </summary>
 [PageController(
     DisplayName = "Page Test Hub",

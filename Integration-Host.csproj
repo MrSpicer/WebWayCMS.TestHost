@@ -22,4 +22,8 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <EmbeddedResource Include="Fixtures\faqs.contentseed.json" />
+  </ItemGroup>
+
 </Project>

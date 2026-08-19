@@ -1,0 +1,88 @@
+{
+  "items": [
+    {
+      "id": "11111111-0000-4000-8000-000000000001",
+      "contentType": "faqs",
+      "publish": true,
+      "fields": {
+        "title": "Reset Password",
+        "slug": "general-reset-password",
+        "question": "How do I reset my password?",
+        "answer": "<p>Choose <em>Forgot your password?</em> on the sign-in page and follow the link we email you.</p>",
+        "helpfulnessRating": 5
+      }
+    },
+    {
+      "id": "11111111-0000-4000-8000-000000000002",
+      "contentType": "faqs",
+      "publish": true,
+      "fields": {
+        "title": "Account Page",
+        "slug": "general-account-page",
+        "question": "Where can I update my account details?",
+        "answer": "<p>Open your account page from the profile menu and edit your name, email, and preferences.</p>",
+        "helpfulnessRating": 4
+      }
+    },
+    {
+      "id": "11111111-0000-4000-8000-000000000003",
+      "contentType": "faqs",
+      "publish": true,
+      "fields": {
+        "title": "Contact Support",
+        "slug": "general-contact-support",
+        "question": "How do I contact support?",
+        "answer": "<p>Use the contact form, or email <strong>support@example.com</strong> and we will reply within one business day.</p>",
+        "helpfulnessRating": 3
+      }
+    },
+    {
+      "id": "11111111-0000-4000-8000-000000000004",
+      "contentType": "faqs",
+      "publish": true,
+      "fields": {
+        "title": "Support Hours",
+        "slug": "general-support-hours",
+        "question": "What are your support hours?",
+        "answer": "<p>Support is available Monday to Friday, 9am to 5pm.</p>",
+        "helpfulnessRating": 2
+      }
+    },
+    {
+      "id": "11111111-0000-4000-8000-000000000005",
+      "contentType": "faqs",
+      "publish": true,
+      "fields": {
+        "title": "Update Card",
+        "slug": "billing-update-card",
+        "question": "How do I update my card on file?",
+        "answer": "<p>Edit your payment method on the billing page and save the new card details.</p>",
+        "helpfulnessRating": 1
+      }
+    },
+    {
+      "id": "11111111-0000-4000-8000-000000000006",
+      "contentType": "faqs",
+      "publish": true,
+      "fields": {
+        "title": "Refunds",
+        "slug": "billing-refunds",
+        "question": "How do I request a refund?",
+        "answer": "<p>Refunds are processed within 30 days.</p><script>alert('xss')</script><p onclick=\"alert('xss')\">Contact billing for help.</p>",
+        "helpfulnessRating": 0
+      }
+    },
+    {
+      "id": "11111111-0000-4000-8000-000000000007",
+      "contentType": "faqs",
+      "publish": false,
+      "fields": {
+        "title": "Draft FAQ",
+        "slug": "draft-unpublished",
+        "question": "How can I verify the draft preview path?",
+        "answer": "<p>Open the FAQ list and use the preview action on the draft row.</p>",
+        "helpfulnessRating": 5
+      }
+    }
+  ]
+}

@@ -1,0 +1,75 @@
+{
+  "items": [
+    {
+      "id": "22222222-0000-4000-8000-000000000001",
+      "contentType": "pages",
+      "publish": true,
+      "fields": {
+        "title": "FAQ Test",
+        "slug": "faq-test",
+        "controllerName": "GenericPage",
+        "viewName": "Default",
+        "configurationJson": "{\"style\":\"\",\"meta\":\"<meta name=\\\"description\\\" content=\\\"Seeded FAQ widget test page.\\\">\"}"
+      }
+    },
+    {
+      "id": "22222222-0000-4000-8000-000000000002",
+      "contentType": "pages",
+      "publish": true,
+      "fields": {
+        "title": "Page Test Hub",
+        "slug": "page-test",
+        "controllerName": "PageTestHub",
+        "configurationJson": "{\"intro\":\"<p>Seeded intro for the page controller test suite.</p>\",\"showDiagnostics\":true}"
+      }
+    },
+    {
+      "id": "22222222-0000-4000-8000-000000000003",
+      "contentType": "pages",
+      "publish": true,
+      "fields": {
+        "title": "Zone Showcase",
+        "slug": "zones",
+        "controllerName": "ZoneShowcasePage",
+        "viewName": "TwoColumn",
+        "configurationJson": "{\"heading\":\"Zone Showcase\",\"showDiagnostics\":true,\"note\":\"Seeded two-column showcase.\"}"
+      }
+    },
+    {
+      "id": "22222222-0000-4000-8000-000000000004",
+      "contentType": "pages",
+      "publish": true,
+      "fields": {
+        "title": "Zone Landing",
+        "slug": "zones-landing",
+        "controllerName": "ZoneShowcasePage",
+        "viewName": "Landing",
+        "configurationJson": "{\"heading\":\"Landing Showcase\",\"showDiagnostics\":false,\"note\":\"Seeded landing showcase.\"}"
+      }
+    },
+    {
+      "id": "22222222-0000-4000-8000-000000000005",
+      "contentType": "pages",
+      "publish": true,
+      "fields": {
+        "title": "Configured Page",
+        "slug": "configured",
+        "controllerName": "ConfiguredPage",
+        "configurationJson": "{\"heading\":\"Configured Page\",\"intro\":\"Every EditorType, echoed as data-cfg attributes.\",\"body\":\"<p>Rich text body for the configured page.</p>\",\"maxItems\":7,\"showDetails\":true,\"sortOrder\":\"title-asc\",\"anchorSlug\":\"configured-anchor\",\"accentColor\":\"#336699\",\"moreUrl\":\"https://example.com/more\",\"contactEmail\":\"hello@example.com\",\"effectiveDate\":\"2026-01-15\",\"reviewedAt\":\"2026-01-15T09:30:00\",\"featuredFaqId\":\"@seed:11111111-0000-4000-8000-000000000001\",\"viewName\":\"Default\",\"detailPageController\":\"GenericPage\",\"testMarker\":\"seeded-marker\",\"headingIcon\":\"fa-solid fa-star\"}"
+      }
+    },
+    {
+      "id": "22222222-0000-4000-8000-000000000006",
+      "contentType": "pages",
+      "publish": true,
+      "fields": {
+        "title": "Nested Page",
+        "slug": "nested",
+        "controllerName": "ZoneShowcasePage",
+        "viewName": "Bare",
+        "parentNodeId": "@seed:22222222-0000-4000-8000-000000000002",
+        "configurationJson": "{\"heading\":\"Nested Page\",\"showDiagnostics\":true}"
+      }
+    }
+  ]
+}

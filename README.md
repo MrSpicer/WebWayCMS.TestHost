@@ -33,12 +33,51 @@ libraries after cloning (and after changing CMS source) before building or runni
 Runs `dotnet watch run` against the integration host with `ASPNETCORE_ENVIRONMENT=Development`, so
 C# and Razor changes are picked up without a manual rebuild.
 
+## Seeded fixtures
+
+A fresh `./scripts/StartIntegrationHost.sh` boot seeds the whole test site automatically through the
+JSON content seeder — no manual `/wadmin` creation is required before anything is assertable. Two
+files carry the fixtures, one per source provider so a single boot exercises both:
+
+| File | Provider | Contents |
+|---|---|---|
+| `Fixtures/faqs.contentseed.json` | embedded resource (`.contentseed.json` suffix) | 7 `faqs` items |
+| `contentseed/pages.json` | disk folder (`ContentSeed:Path` defaults to `contentseed`) | 6 `pages` items |
+
+FAQ slugs:
+
+| Slug | Topic (slug prefix) | Rating | Published |
+|---|---|---|---|
+| `general-reset-password` | `general` | 5 | yes |
+| `general-account-page` | `general` | 4 | yes |
+| `general-contact-support` | `general` | 3 | yes |
+| `general-support-hours` | `general` | 2 | yes |
+| `billing-update-card` | `billing` | 1 | yes |
+| `billing-refunds` | `billing` (sanitization probe) | 0 | yes |
+| `draft-unpublished` | — | 5 | no |
+
+`FaqCount` renders **6**; `FaqTopic` on `general` matches **4** (page size 2 ⇒ two full pages) and on
+`billing` matches **2**. Ratings are all distinct so `data-faq-rating` assertions pin the right row.
+
+Page slugs: `faq-test`, `page-test` (+ its child `page-test/nested`), `zones`, `zones-landing`,
+`configured`.
+
+The seed `id` in each file is a **stable key, not a node id** — the ledger maps it to a CMS-generated
+`ContentNode.Id`, so Playwright keys off **slugs**, not seed guids. Cross-item references
+(`ConfiguredPage.FeaturedFaqId` → the `general-reset-password` FAQ, and the `nested` page's
+`ParentNodeId` → the `page-test` page) use `@seed:{guid}` tokens resolved through the ledger.
+
+Seeding is **idempotent**: an admin edit to a seeded FAQ survives reboots, and changing a fixture file
+re-applies it as a new version on the same node. To build the site by hand instead, disable seeding
+with `WEBWAYCMS_SKIP_CONTENTSEED=true` (or `ContentSeed:Enabled=false`).
+
 ## Test widgets
 
 Four host-owned content-zone widgets exercise the whole widget system end-to-end through the real
-admin UI and public rendering path. They are the surface a Playwright suite drives; each widget
-renders a stable, assertable empty state so no fixture seeding is required — Playwright creates the
-FAQs and the page through the admin UI itself.
+admin UI and public rendering path. They are the surface a Playwright suite drives. The FAQ and page
+*content* is seeded (see Seeded fixtures), but *widget placements* are not — each widget renders a
+stable, assertable empty state, and Playwright places the widgets into zones through the admin UI
+itself.
 
 | Widget | Type | Category | What it covers |
 |---|---|---|---|
@@ -77,8 +116,9 @@ Then at `http://localhost:45847`:
    `routable_widgets_registered`.
 2. `/wadmin/widgets` — all four widgets listed, in categories `FAQ Test` and `FAQ Test Routing`, in
    `Order`, with their icons.
-3. `/wadmin/faqs` — create and **publish** 3-4 FAQs with lowercase slugs.
-4. `/wadmin/pages` — create and publish a `GenericPage` at slug `faq-test`, view `Default`.
+3. `/wadmin/faqs` — the seven FAQs are already seeded: six published plus a `draft-unpublished` draft.
+4. `/wadmin/pages` — already seeded: `faq-test` (`GenericPage`, view `Default`) plus the page-controller
+   pages below.
 5. **Visit `/faq-test` once.** Zones are created lazily: the `Main` zone row does not exist until
    `ContentZoneViewComponent` renders it (`GetOrCreateViewModelByPageSlotAsync`), so it will not
    appear in `/wadmin/contentzones` until the page has been served at least once. Loading `/` at
@@ -172,9 +212,10 @@ change and no DI registration** is needed.
 `data-zone-name` values in the DOM once a Layout widget is dropped in. `ShowcaseGlobal` is
 `IsGlobal = true`.
 
-### Discovery (this is the *only* surface — no navbar link, no seeder)
+### Discovery (no navbar link — the pages are created by the JSON content seeder)
 
-Each page type exists only once an operator creates a page with it. Create these at `/wadmin/pages`:
+These pages are seeded at startup (see Seeded fixtures), so they already exist at `/wadmin/pages`
+(plus `faq-test` and a `nested` child page under `page-test`):
 
 1. `page-test` → **Page Test Hub** (leave View Name empty) — the index of the suite.
 2. `zones` → **Zone Showcase Page**, View Name **`TwoColumn`**.
@@ -183,7 +224,7 @@ Each page type exists only once an operator creates a page with it. Create these
 
 Then the manual walkthrough at `http://localhost:45847`:
 
-1. `GET /_diag/extensibility` — still 9/9; the new page types must not disturb the existing checks.
+1. `GET /_diag/extensibility` — still 10/10; the new page types must not disturb the existing checks.
 2. `/wadmin/pagetypes` — the three types are listed under category **Page Tests** with their
    `ConfigurationTypeName` populated.
 3. `/wadmin/pages` → new page → **Zone Showcase Page** — the **View Name** dropdown offers
