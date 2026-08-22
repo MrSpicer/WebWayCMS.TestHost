@@ -4,16 +4,16 @@ using WebWayCMS.Attributes;
 
 namespace WebWayCMS.TestHost.Controllers;
 
-[CmsRoute("/code-test", Order = 0)]
-[CmsRoute("/code-test/simple", Order = 10, Action = "Simple")]
+[CmsRoute("/code-test", Order = 0, NavigationName = "CmsRoute Tests")]
+[CmsRoute("/code-test/simple", Order = 10, Action = "Simple", NavigationName = "Simple")]
 [CmsRoute("/code-test/hello/{name}", Order = 20, Action = "HelloName")]
 [CmsRoute("/code-test/product/{id:int}", Order = 30, Action = "ProductId")]
 [CmsRoute("/code-test/search/{query?}", Order = 40, Action = "Search")]
 [CmsRoute("/code-test/item/{id:guid}", Order = 50, Action = "ItemId")]
 [CmsRoute("/code-test/page-{slug}", Order = 60, Action = "PageSlug")]
 [CmsRoute("/code-test/docs/{**path}", Order = 70, Action = "DocsPath")]
-[CmsRoute("/code-test/multi/a", Order = 80, Action = "MultiA")]
-[CmsRoute("/code-test/multi/b", Order = 81, Action = "MultiB")]
+[CmsRoute("/code-test/multi/a", Order = 80, Action = "MultiA", NavigationName = "Multi A")]
+[CmsRoute("/code-test/multi/b", Order = 81, Action = "MultiB", NavigationName = "Multi B")]
 [CmsRoute("/code-test/custom-action", Order = 90, Action = "Custom")]
 [CmsRoute("/code-test/constraints/regex/{slug:regex(^[a-z]+$)}", Order = 100, Action = "RegexSlug")]
 public class CodeTestController : Controller

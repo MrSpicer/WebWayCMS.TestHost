@@ -1,0 +1,73 @@
+@using WebWayCMS.Models.CMSRoute
+@model RouteNavigationViewModel
+
+@*
+    Bootstrap re-skin of the CMS RouteNavigation view. This host's Views/ folder outranks the
+    WebWayCMS.Presentation RCL, so this shadows the shipped Bulma view for every RouteNavigation
+    render in this app -- including the admin UI, which is why _AdminNavbar.cshtml asks for its own
+    named "AdminNavbar" view instead of Default.
+
+    Children become a Bootstrap dropdown, NOT a nested list. `.navbar-expand-* .navbar-nav` is a
+    *descendant* selector, so a nested <ul class="navbar-nav"> also picks up flex-direction:row and
+    renders as a second tier inside its parent <li>, wrecking the bar. The dropdown is the only
+    submenu idiom Bootstrap actually supports in a navbar; bootstrap.bundle.min.js (loaded by
+    _Layout.cshtml) drives it.
+
+    Bootstrap has no true multi-level menu, so grandchildren are flattened into the same
+    .dropdown-menu with a padding-start utility rather than being dropped.
+*@
+
+@{
+    var dropdownIndex = 0;
+}
+
+@if (Model.Items.Any())
+{
+    <ul class="navbar-nav flex-grow-1">
+        @foreach (var item in Model.Items)
+        {
+            if (item.Children.Any())
+            {
+                var toggleId = $"routeNavDropdown{dropdownIndex++}";
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle text-dark" href="#" id="@toggleId" role="button"
+                       data-bs-toggle="dropdown" aria-expanded="false">@item.Title</a>
+                    <ul class="dropdown-menu" aria-labelledby="@toggleId">
+                        @* The toggle itself no longer navigates, so repeat the item's own link. *@
+                        <li><a class="dropdown-item" href="@item.Path">@item.Title</a></li>
+                        <li><hr class="dropdown-divider" /></li>
+                        @foreach (var child in item.Children)
+                        {
+                            RenderMenuItem(child, 0);
+                        }
+                    </ul>
+                </li>
+            }
+            else
+            {
+                <li class="nav-item">
+                    <a class="nav-link text-dark" href="@item.Path">@item.Title</a>
+                </li>
+            }
+        }
+    </ul>
+}
+
+@functions {
+    void RenderMenuItem(RouteNavigationItem item, int depth)
+    {
+        var indent = depth switch
+        {
+            0 => "",
+            1 => " ps-4",
+            _ => " ps-5"
+        };
+
+        <li><a class="dropdown-item@(indent)" href="@item.Path">@item.Title</a></li>
+
+        foreach (var child in item.Children)
+        {
+            RenderMenuItem(child, depth + 1);
+        }
+    }
+}
