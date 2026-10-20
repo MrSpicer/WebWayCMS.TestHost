@@ -5,6 +5,7 @@ using WebWayCMS.Data.Models;
 using WebWayCMS.Data.Services;
 using WebWayCMS.Interfaces;
 using WebWayCMS.Mapping;
+using WebWayCMS.ViewComponents;
 
 using WebWayCMS.TestHost.Data;
 using WebWayCMS.TestHost.Models.Faq;
@@ -24,7 +25,7 @@ namespace WebWayCMS.TestHost.ViewComponents;
     Order = 20,
     ConfigurationType = typeof(FaqTopicConfiguration)
 )]
-public class FaqTopicViewComponent : ViewComponent, IRoutableViewComponent
+public class FaqTopicViewComponent : WidgetViewComponent, IRoutableViewComponent
 {
     private readonly IContentStore<FaqDTO> _store;
     private readonly IMapper _mapper;
@@ -68,7 +69,7 @@ public class FaqTopicViewComponent : ViewComponent, IRoutableViewComponent
             MatchCount = matched.Count,
         };
 
-        return View(config.ViewName ?? "Default", vm);
+        return ModeView(config, vm);
     }
 
     private static bool MatchesTopic(FaqDTO faq, string topic)

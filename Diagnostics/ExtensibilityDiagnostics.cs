@@ -165,7 +165,7 @@ public sealed class ExtensibilityDiagnostics
         try
         {
             var registry = sp.GetRequiredService<IWidgetRegistry>();
-            var required = new[] { "FaqList", "FaqCount", "FaqDetail", "FaqTopic" };
+            var required = new[] { "Faq", "FaqCount", "FaqTopic" };
             var infos = required.ToDictionary(
                 name => name,
                 name => registry.GetByName(name),
@@ -175,15 +175,15 @@ public sealed class ExtensibilityDiagnostics
             if (missing.Count > 0)
                 return new CheckResult("widget_seeded", false, $"Missing widgets: {string.Join(", ", missing)}");
 
-            var faqList = infos["FaqList"]!;
+            var faq = infos["Faq"]!;
             var faqCount = infos["FaqCount"]!;
 
-            var listHasProps = faqList.Properties.Count > 0;
+            var faqHasProps = faq.Properties.Count > 0;
             var countHasNoProps = faqCount.Properties.Count == 0;
 
-            return listHasProps && countHasNoProps
-                ? new CheckResult("widget_seeded", true, $"FaqList props={faqList.Properties.Count}, FaqCount props={faqCount.Properties.Count}")
-                : new CheckResult("widget_seeded", false, $"FaqList props={faqList.Properties.Count} (want >0), FaqCount props={faqCount.Properties.Count} (want 0)");
+            return faqHasProps && countHasNoProps && faq.SupportsList && !faqCount.SupportsList
+                ? new CheckResult("widget_seeded", true, $"Faq props={faq.Properties.Count} supportsList={faq.SupportsList}, FaqCount props={faqCount.Properties.Count}")
+                : new CheckResult("widget_seeded", false, $"Faq props={faq.Properties.Count} (want >0) supportsList={faq.SupportsList} (want true), FaqCount props={faqCount.Properties.Count} (want 0) supportsList={faqCount.SupportsList} (want false)");
         }
         catch (Exception ex)
         {
@@ -199,12 +199,12 @@ public sealed class ExtensibilityDiagnostics
                 .Select(w => w.ComponentName)
                 .ToHashSet(StringComparer.OrdinalIgnoreCase);
 
-            var hasDetail = names.Contains("FaqDetail");
+            var hasDetail = names.Contains("Faq");
             var hasTopic = names.Contains("FaqTopic");
 
             return hasDetail && hasTopic
                 ? new CheckResult("routable_widgets_registered", true, string.Join(", ", names))
-                : new CheckResult("routable_widgets_registered", false, $"FaqDetail={hasDetail}, FaqTopic={hasTopic}, all=[{string.Join(", ", names)}]");
+                : new CheckResult("routable_widgets_registered", false, $"Faq={hasDetail}, FaqTopic={hasTopic}, all=[{string.Join(", ", names)}]");
         }
         catch (Exception ex)
         {

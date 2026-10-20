@@ -4,7 +4,7 @@ namespace WebWayCMS.TestHost.Pages;
 
 /// <summary>
 /// Configuration for the <c>ConfiguredPage</c> page type. One property per <see cref="EditorType"/>,
-/// mirroring <c>FaqListConfiguration</c> so the page-config round-trip exercises every editor the
+/// mirroring <c>FaqConfiguration</c> so the page-config round-trip exercises every editor the
 /// form system ships. The entity picker targets the host <c>faqs</c> content type via the generic
 /// entity-picker endpoint fallback.
 /// </summary>
@@ -134,7 +134,7 @@ public class ConfiguredPageConfiguration
     [FormProperty(
         Label = "View",
         EditorType = EditorType.ViewPicker,
-        ViewComponentName = "FaqList",
+        ViewComponentName = "Faq",
         Order = 14,
         FormComponent = "ViewPicker"
     )]

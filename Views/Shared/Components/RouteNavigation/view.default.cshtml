@@ -4,8 +4,8 @@
 @*
     Bootstrap re-skin of the CMS RouteNavigation view. This host's Views/ folder outranks the
     WebWayCMS.Presentation RCL, so this shadows the shipped Bulma view for every RouteNavigation
-    render in this app -- including the admin UI, which is why _AdminNavbar.cshtml asks for its own
-    named "AdminNavbar" view instead of Default.
+    render in this app -- including the admin UI, which is why _AdminNavbar.cshtml renders the
+    CMS's own admin.Navbar view (admin render mode) instead of view.default.
 
     Children become a Bootstrap dropdown, NOT a nested list. `.navbar-expand-* .navbar-nav` is a
     *descendant* selector, so a nested <ul class="navbar-nav"> also picks up flex-direction:row and

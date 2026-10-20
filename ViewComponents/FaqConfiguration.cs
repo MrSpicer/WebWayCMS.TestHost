@@ -1,22 +1,63 @@
 using WebWayCMS.Attributes;
+using WebWayCMS.ContentZones;
 
 namespace WebWayCMS.TestHost.ViewComponents;
 
 /// <summary>
-/// Configuration for the <c>FaqList</c> widget. One property per <see cref="EditorType"/> so the
-/// admin "Add Widget" modal exercises every editor in the form system; the entity picker targets the
-/// host <c>faqs</c> content type via the generic entity-picker endpoint fallback. The trailing
-/// <see cref="HeadingIcon"/> property exercises a host-contributed form component instead.
+/// Configuration for the list-capable <c>Faq</c> widget. Fields are tagged with the display mode they
+/// apply to (<see cref="FormPropertyAttribute.DisplayModes"/>), so the zone editor shows a different
+/// configurator for Single (one FAQ: from the URL slug or <see cref="FaqId"/>) and List (a sorted,
+/// limited list); untagged fields appear in both.
+///
+/// List mode keeps one property per <see cref="EditorType"/> so the admin "Add Widget" modal
+/// exercises every editor in the form system; the entity pickers target the host <c>faqs</c> content
+/// type via the generic entity-picker endpoint fallback. The trailing <see cref="HeadingIcon"/>
+/// property exercises a host-contributed form component instead. The view pickers
+/// (<c>ViewName</c> for single, <c>ListViewName</c> for list) come from <see cref="WidgetConfiguration"/>.
 /// </summary>
-public class FaqListConfiguration
+public class FaqConfiguration : WidgetConfiguration
 {
+    // ─── Single ──────────────────────────────────────────────────────────────
+
+    [FormProperty(
+        Label = "FAQ",
+        HelpText = "Fallback FAQ shown when the URL has no slug.",
+        EditorType = EditorType.Guid,
+        EntityType = "faqs",
+        DisplayModes = WidgetDisplayMode.Single,
+        Order = 1,
+        FormComponent = "EntityPicker"
+    )]
+    public Guid? FaqId { get; set; }
+
+    [FormProperty(
+        Label = "Show Back Link",
+        EditorType = EditorType.Checkbox,
+        DisplayModes = WidgetDisplayMode.Single,
+        Order = 2,
+        FormComponent = "Checkbox"
+    )]
+    public bool ShowBackLink { get; set; }
+
+    [FormProperty(
+        Label = "Back Link Text",
+        EditorType = EditorType.Text,
+        DisplayModes = WidgetDisplayMode.Single,
+        Order = 3,
+        FormComponent = "Text"
+    )]
+    public string? BackLinkText { get; set; }
+
+    // ─── List ────────────────────────────────────────────────────────────────
+
     [FormProperty(
         Label = "Heading",
         HelpText = "Shown above the FAQ list.",
         EditorType = EditorType.Text,
         IsRequired = true,
         MaxLength = 60,
-        Order = 1,
+        DisplayModes = WidgetDisplayMode.List,
+        Order = 11,
         FormComponent = "Text"
     )]
     public string Heading { get; set; } = string.Empty;
@@ -25,7 +66,8 @@ public class FaqListConfiguration
         Label = "Intro",
         EditorType = EditorType.TextArea,
         Group = "Copy",
-        Order = 2,
+        DisplayModes = WidgetDisplayMode.List,
+        Order = 12,
         FormComponent = "TextArea"
     )]
     public string? Intro { get; set; }
@@ -34,7 +76,8 @@ public class FaqListConfiguration
         Label = "Footnote",
         EditorType = EditorType.RichText,
         Group = "Copy",
-        Order = 3,
+        DisplayModes = WidgetDisplayMode.List,
+        Order = 13,
         FormComponent = "RichText"
     )]
     public string? Footnote { get; set; }
@@ -44,7 +87,8 @@ public class FaqListConfiguration
         EditorType = EditorType.Number,
         Min = 1,
         Max = 20,
-        Order = 4,
+        DisplayModes = WidgetDisplayMode.List,
+        Order = 14,
         FormComponent = "Number"
     )]
     // Nullable deliberately: the admin form serializer writes null for an empty number field
@@ -57,7 +101,8 @@ public class FaqListConfiguration
         Label = "Show Answers",
         EditorType = EditorType.Checkbox,
         GroupWithNext = true,
-        Order = 5,
+        DisplayModes = WidgetDisplayMode.List,
+        Order = 15,
         FormComponent = "Checkbox"
     )]
     public bool ShowAnswers { get; set; }
@@ -66,7 +111,8 @@ public class FaqListConfiguration
         Label = "Sort Order",
         EditorType = EditorType.Dropdown,
         DropdownOptions = "title-asc:Title A-Z,title-desc:Title Z-A,newest:Newest first",
-        Order = 6,
+        DisplayModes = WidgetDisplayMode.List,
+        Order = 16,
         FormComponent = "Dropdown"
     )]
     public string? SortOrder { get; set; }
@@ -77,7 +123,8 @@ public class FaqListConfiguration
         EditorType = EditorType.Text,
         Pattern = "^[a-z0-9-]*$",
         PatternErrorMessage = "Anchor slug may contain only lowercase letters, numbers and hyphens.",
-        Order = 7,
+        DisplayModes = WidgetDisplayMode.List,
+        Order = 17,
         FormComponent = "Text"
     )]
     public string? AnchorSlug { get; set; }
@@ -85,7 +132,7 @@ public class FaqListConfiguration
     [FormProperty(
         Label = "Accent Color",
         EditorType = EditorType.Color,
-        Order = 8,
+        Order = 18,
         FormComponent = "Color"
     )]
     public string? AccentColor { get; set; }
@@ -93,7 +140,7 @@ public class FaqListConfiguration
     [FormProperty(
         Label = "More URL",
         EditorType = EditorType.Url,
-        Order = 9,
+        Order = 19,
         FormComponent = "Url"
     )]
     public string? MoreUrl { get; set; }
@@ -101,7 +148,7 @@ public class FaqListConfiguration
     [FormProperty(
         Label = "Contact Email",
         EditorType = EditorType.Email,
-        Order = 10,
+        Order = 20,
         FormComponent = "Email"
     )]
     public string? ContactEmail { get; set; }
@@ -109,7 +156,7 @@ public class FaqListConfiguration
     [FormProperty(
         Label = "Effective Date",
         EditorType = EditorType.Date,
-        Order = 11,
+        Order = 21,
         FormComponent = "Date"
     )]
     public DateOnly? EffectiveDate { get; set; }
@@ -117,7 +164,7 @@ public class FaqListConfiguration
     [FormProperty(
         Label = "Reviewed At",
         EditorType = EditorType.DateTime,
-        Order = 12,
+        Order = 22,
         FormComponent = "DateTime"
     )]
     public DateTime? ReviewedAt { get; set; }
@@ -127,24 +174,17 @@ public class FaqListConfiguration
         HelpText = "A single FAQ promoted above the list.",
         EditorType = EditorType.Guid,
         EntityType = "faqs",
-        Order = 13,
+        DisplayModes = WidgetDisplayMode.List,
+        Order = 23,
         FormComponent = "EntityPicker"
     )]
     public Guid? FeaturedFaqId { get; set; }
 
     [FormProperty(
-        Label = "View",
-        EditorType = EditorType.ViewPicker,
-        ViewComponentName = "FaqList",
-        Order = 14,
-        FormComponent = "ViewPicker"
-    )]
-    public string? ViewName { get; set; }
-
-    [FormProperty(
         Label = "Detail Page Controller",
         EditorType = EditorType.PageControllerPicker,
-        Order = 15,
+        DisplayModes = WidgetDisplayMode.List,
+        Order = 25,
         FormComponent = "PageControllerPicker"
     )]
     public string? DetailPageController { get; set; }
@@ -152,7 +192,7 @@ public class FaqListConfiguration
     [FormProperty(
         Label = "Test Marker",
         EditorType = EditorType.Hidden,
-        Order = 16,
+        Order = 26,
         FormComponent = "Hidden"
     )]
     public string? TestMarker { get; set; }
@@ -160,7 +200,7 @@ public class FaqListConfiguration
     [FormProperty(
         Label = "Heading Icon",
         HelpText = "Font Awesome class rendered before the heading.",
-        Order = 17,
+        Order = 27,
         FormComponent = "IconPicker",
         DropdownOptions = "fa-solid fa-circle-question:Question mark,fa-solid fa-book:Book,fa-solid fa-lightbulb:Lightbulb,fa-solid fa-star:Star"
     )]

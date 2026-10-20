@@ -1,7 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 
 using WebWayCMS.Attributes;
+using WebWayCMS.ContentZones;
 using WebWayCMS.Data.Services;
+using WebWayCMS.ViewComponents;
 
 using WebWayCMS.TestHost.Data;
 
@@ -19,7 +21,7 @@ namespace WebWayCMS.TestHost.ViewComponents;
     IconClass = "fa-hashtag",
     Order = 20
 )]
-public class FaqCountViewComponent : ViewComponent
+public class FaqCountViewComponent : WidgetViewComponent
 {
     private readonly IContentStore<FaqDTO> _store;
 
@@ -31,6 +33,6 @@ public class FaqCountViewComponent : ViewComponent
     public async Task<IViewComponentResult> InvokeAsync()
     {
         var faqs = await _store.GetAllAsync(HttpContext.RequestAborted);
-        return View("Default", faqs.Count);
+        return ModeView((WidgetConfiguration?)null, faqs.Count);
     }
 }

@@ -25,8 +25,8 @@ builder.Services.AddScoped<IAdminCrudHandler>(sp => sp.GetRequiredService<FaqMod
 
 // Routable widgets are collected through IEnumerable<IRoutableViewComponent>, so each one needs an
 // explicit registration alongside its concrete ViewComponent registration.
-builder.Services.AddScoped<FaqDetailViewComponent>();
-builder.Services.AddScoped<IRoutableViewComponent>(sp => sp.GetRequiredService<FaqDetailViewComponent>());
+builder.Services.AddScoped<FaqViewComponent>();
+builder.Services.AddScoped<IRoutableViewComponent>(sp => sp.GetRequiredService<FaqViewComponent>());
 builder.Services.AddScoped<FaqTopicViewComponent>();
 builder.Services.AddScoped<IRoutableViewComponent>(sp => sp.GetRequiredService<FaqTopicViewComponent>());
 

@@ -3,11 +3,11 @@ using WebWayCMS.TestHost.ViewComponents;
 namespace WebWayCMS.TestHost.Models.Faq;
 
 /// <summary>
-/// Render model for the routable <c>FaqDetail</c> widget.
+/// Render model for the <c>Faq</c> widget in single mode.
 /// </summary>
 public sealed class FaqDetailViewModel
 {
-    public FaqDetailConfiguration Configuration { get; init; } = new();
+    public FaqConfiguration Configuration { get; init; } = new();
 
     public FaqViewModel? Faq { get; init; }
 
