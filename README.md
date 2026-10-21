@@ -149,8 +149,9 @@ Then at `http://localhost:45847`:
     inner `Main` and `Sidebar` zones appear and accept a list-mode `FAQ`.
 11. Global zone: add a `FaqCount` to the footer `SiteFooter` zone and confirm it renders on
     `/faq-test`, `/code-test`, and `/`.
-12. Read context: leave one FAQ as an unpublished draft — absent from the public page, present via
-    `/wadmin/faqs/preview/{nodeId}` (preview cookie path).
+12. Read context: leave one FAQ as an unpublished draft — absent from the public page, present in
+    the `faq-test` page's draft preview (Pages → **Preview** → `/_preview/{pageNodeId}`). Drafts are read
+    for that request only: reopening `/faq-test` afterwards still shows only published FAQs.
 13. Deactivate `FaqCount` at `/wadmin/widgets` → it disappears from the add-widget picker while
     existing placements keep rendering.
 
