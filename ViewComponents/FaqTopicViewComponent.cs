@@ -14,8 +14,9 @@ namespace WebWayCMS.TestHost.ViewComponents;
 
 /// <summary>
 /// Host-owned routable widget. Generates two widget routes — <c>topics/{topic}</c> and
-/// <c>topics/{topic}/page/{page:int}</c> — proving multi-route generation, literal segments inside a
-/// widget pattern, and inline-constraint matching.
+/// <c>topics/{topic}/page/{pageNumber:int}</c> — proving multi-route generation, literal segments inside a
+/// widget pattern, and inline-constraint matching. The parameter is not named <c>page</c>: that is an
+/// ASP.NET Core reserved routing name, and the CMS refuses to register a route that uses it.
 /// </summary>
 [ContentZoneComponent(
     DisplayName = "FAQ Topic",
@@ -47,7 +48,7 @@ public class FaqTopicViewComponent : WidgetViewComponent, IRoutableViewComponent
             : string.Empty;
 
         var page = 1;
-        if (ViewContext.RouteData.Values.TryGetValue("page", out var pageObj)
+        if (ViewContext.RouteData.Values.TryGetValue("pageNumber", out var pageObj)
             && int.TryParse(pageObj?.ToString(), out var parsedPage) && parsedPage > 0)
         {
             page = parsedPage;
@@ -85,7 +86,7 @@ public class FaqTopicViewComponent : WidgetViewComponent, IRoutableViewComponent
     string IRoutableViewComponent.ComponentName => "FaqTopic";
 
     Task<IReadOnlyList<CMSRouteDTO>> IRoutableViewComponent.GenerateRoutesAsync(
-        string parentRoute, Guid contentZoneItemNodeId, CancellationToken ct)
+        string parentRoute, Guid contentZoneItemNodeId, WidgetDisplayMode displayMode, CancellationToken ct)
     {
         var routes = new List<CMSRouteDTO>
         {
@@ -98,7 +99,7 @@ public class FaqTopicViewComponent : WidgetViewComponent, IRoutableViewComponent
             },
             new()
             {
-                Pattern = "topics/{topic}/page/{page:int}",
+                Pattern = "topics/{topic}/page/{pageNumber:int}",
                 OwningContentNodeId = contentZoneItemNodeId,
                 OwningContentType = "FaqTopicWidget",
                 Order = 1

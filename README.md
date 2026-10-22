@@ -36,13 +36,17 @@ C# and Razor changes are picked up without a manual rebuild.
 ## Seeded fixtures
 
 A fresh `./scripts/StartIntegrationHost.sh` boot seeds the whole test site automatically through the
-JSON content seeder — no manual `/wadmin` creation is required before anything is assertable. Two
-files carry the fixtures, one per source provider so a single boot exercises both:
+JSON content seeder — no manual `/wadmin` creation is required before anything is assertable. The
+fixtures span both source providers so a single boot exercises both:
 
 | File | Provider | Contents |
 |---|---|---|
 | `Fixtures/faqs.contentseed.json` | embedded resource (`.contentseed.json` suffix) | 7 `faqs` items |
-| `contentseed/pages.json` | disk folder (`ContentSeed:Path` defaults to `contentseed`) | 6 `pages` items |
+| `contentseed/pages.json` | disk folder (`ContentSeed:Path` defaults to `contentseed`) | 7 `pages` items |
+| `contentseed/content.json` | disk folder | 4 `contentblocks`, 1 `images` (`@media:media/test-pattern.png`), 1 `articlelists` + 2 `articles` |
+| `contentseed/zones.json` | disk folder | 16 zone items (`zone` locators) filling every page's zones — see below |
+
+Seed-id ranges: `11111111-…` FAQs, `22222222-…` pages, `33333333-…` other content, `44444444-…` zone items.
 
 FAQ slugs:
 
@@ -60,7 +64,22 @@ FAQ slugs:
 `billing` matches **2**. Ratings are all distinct so `data-faq-rating` assertions pin the right row.
 
 Page slugs: `faq-test`, `page-test` (+ its child `page-test/nested`), `zones`, `zones-landing`,
-`configured`.
+`configured`, `articles-test`.
+
+Seeded zone content (every page is published with it, so nothing is pending):
+
+| Page / zone | Items, in order |
+|---|---|
+| `/faq-test` `Main` | `FaqCount`; `Faq` **List** (`list.Accordion`, heading "Seeded FAQ List", featured `general-reset-password`, `data-cfg-testmarker="faq-test-list"`); `Faq` **Single** (configured `general-account-page`, owns `/faq-test/{slug}`); `FaqTopic` (page size 2) |
+| global `SiteFooter` | `FaqCount` (on every page using the layout) |
+| `/zones` `PageHeader` | `ContentBlock` "Seeded showcase header block." |
+| `/zones` `PageMain` | `Layout` `TwoColumnSidebar` → nested `Main`: `ContentBlock` "Seeded layout main column block."; nested `Sidebar`: `Faq` **List** (`list.Compact`, "Sidebar FAQs") |
+| `/zones` `PageAside` | `FaqCount` |
+| global `ShowcaseGlobal` | `ContentBlock` "Seeded showcase global block." |
+| `/zones-landing` `LandingHero` | `ContentBlock` "Seeded landing hero block."; `Image` (the test pattern, with caption) |
+| `/zones-landing` `PageMain` | `Faq` **List** (`list.default`, "Landing FAQs") |
+| `/zones-landing` `LandingCta` | `FaqCount` |
+| `/articles-test` `Main` | `Article` **List** (the "Test Articles" list, newest first) — owns `/articles-test/{slug}` (`first-seeded-article`, `second-seeded-article`) |
 
 The seed `id` in each file is a **stable key, not a node id** — the ledger maps it to a CMS-generated
 `ContentNode.Id`, so Playwright keys off **slugs**, not seed guids. Cross-item references
@@ -83,7 +102,7 @@ itself.
 |---|---|---|---|
 | `Faq` | routing (1 route), `SupportsList` | `FAQ Test` | Single/List display modes with per-mode configurators. **Single**: `{slug}` route, slug → `GetBySlugAsync` resolution, configured-FAQ fallback, `view.*` views. **List**: full config matrix — one property per `EditorType` (all 15), `EntityPicker` against the host `faqs` type, `ListViewName` picker over 3 `list.*` views, plus a `HeadingIcon` property on the host-contributed `IconPicker` form component |
 | `FaqCount` | non-routing | `FAQ Test` | the zero-config path (`HasConfiguration == false`, modal renders no fields) |
-| `FaqTopic` | routing (2 routes) | `FAQ Test Routing` | `topics/{topic}` + `topics/{topic}/page/{page:int}` — multi-route, literal segments, inline `int` constraint |
+| `FaqTopic` | routing (2 routes) | `FAQ Test Routing` | `topics/{topic}` + `topics/{topic}/page/{pageNumber:int}` — multi-route, literal segments, inline `int` constraint |
 
 Zones exercised:
 
@@ -119,11 +138,11 @@ Then at `http://localhost:45847`:
 3. `/wadmin/faqs` — the seven FAQs are already seeded: six published plus a `draft-unpublished` draft.
 4. `/wadmin/pages` — already seeded: `faq-test` (`GenericPage`, view `Default`) plus the page-controller
    pages below.
-5. **Visit `/faq-test` once.** Zones are created lazily: the `Main` zone row does not exist until
-   `ContentZoneViewComponent` renders it (`GetOrCreateViewModelByPageSlotAsync`), so it will not
-   appear in `/wadmin/contentzones` until the page has been served at least once. Loading `/` at
-   the same time materialises the global `SiteFooter` zone needed in step 11.
-6. Edit the `faq-test` page's `Main` zone (`/wadmin/contentzones` → the page's `Main` zone → zone-edit):
+5. The `faq-test` page's `Main` zone is already seeded (see the table above), and so are the zones
+   used by steps 10 and 11. To exercise the editor by hand, start from a clean zone (delete the seeded
+   items, or boot with `WEBWAYCMS_SKIP_CONTENTSEED=true` and visit `/faq-test` once so the lazily
+   created `Main` zone exists).
+6. Edit the `faq-test` page's `Main` zone (Pages → **FAQ Test** → **Edit zones**):
    - add **FaqCount** — the modal shows no fields; the widget renders a count;
    - add **FAQ** with the modal's **List** toggle — the modal shows the list-mode fields; confirm the
      entity picker for *Featured FAQ* populates from `/wadmin/faqs/api/list`, pick each *List View*
@@ -136,8 +155,8 @@ Then at `http://localhost:45847`:
    - switch an item's mode in the settings (cog) dialog — the *Display Mode* field appears only for
      `FAQ` (not `FaqCount` or `Layout`) and the item re-renders as list or single.
 7. `/wadmin/routes` — three widget routes exist, prefixed by the page route:
-   `/faq-test/{slug:regex(^[a-z0-9-]+$)}`, `/faq-test/topics/{topic}`,
-   `/faq-test/topics/{topic}/page/{page:int}`.
+   `/faq-test/{slug:regex(^[a-z0-9-]+$)}` (owned by the **Single** `FAQ` item — a List-mode `FAQ` registers
+   no route), `/faq-test/topics/{topic}`, `/faq-test/topics/{topic}/page/{pageNumber:int}`.
 8. Public URLs render the right widget and the list yields:
    `/faq-test`, `/faq-test/<a-faq-slug>`, `/faq-test/topics/general`,
    `/faq-test/topics/general/page/2`. Both inline constraints hold:
@@ -145,10 +164,11 @@ Then at `http://localhost:45847`:
    regex; a matching-but-unknown slug like `/faq-test/nope` renders the `_NotFound` view instead).
 9. Delete the `FaqTopic` zone item → its two route rows are swept from `/wadmin/routes` and the URLs
    404. Re-add it → the routes come back.
-10. Nested zones: add the CMS **Layout** widget to `Main`, pick `TwoColumnSidebar`, and confirm the
-    inner `Main` and `Sidebar` zones appear and accept a list-mode `FAQ`.
-11. Global zone: add a `FaqCount` to the footer `SiteFooter` zone and confirm it renders on
-    `/faq-test`, `/code-test`, and `/`.
+10. Nested zones: `/zones` already carries a seeded **Layout** (`TwoColumnSidebar`) whose inner `Main`
+    and `Sidebar` zones hold a ContentBlock and a list-mode `FAQ`; adding another Layout to a `Main`
+    zone by hand should behave the same.
+11. Global zone: the seeded `FaqCount` in the footer `SiteFooter` zone renders on `/faq-test`,
+    `/code-test`, and `/`.
 12. Read context: leave one FAQ as an unpublished draft — absent from the public page, present in
     the `faq-test` page's draft preview (Pages → **Preview** → `/_preview/{pageNodeId}`). Drafts are read
     for that request only: reopening `/faq-test` afterwards still shows only published FAQs.
@@ -159,8 +179,9 @@ Assertion surfaces: `data-testid="faq-list"` (with `data-view`, `data-faq-count`
 `data-testid="faq-list-empty"` empty state, and one `data-cfg-{property}` attribute per config value —
 dates are emitted in `yyyy-MM-dd` / `yyyy-MM-ddTHH:mm` via `FormValueFormatter`, matching what the
 form submitted), `data-testid="faq-count"` (with `data-count`), `data-testid="faq-detail"` (with
-`data-slug` and `data-source="route|config|missing"` — the widget renders nothing at all when no slug
-is in the URL and no fallback FAQ is configured), and `data-testid="faq-topic"` (with `data-topic`,
+`data-slug` and `data-source="route|config|missing"` — the slug is read only when the request matched
+this item's own `{slug}` route, so on the plain page the widget renders nothing at all unless a fallback
+FAQ is configured), and `data-testid="faq-topic"` (with `data-topic`,
 `data-page`, `data-page-size` (the *effective* size, after the fallback), `data-match-count`).
 
 Every element that represents one FAQ also carries `data-faq-rating` — the `HelpfulnessRating` column

@@ -70,6 +70,18 @@
         "parentNodeId": "@seed:22222222-0000-4000-8000-000000000002",
         "configurationJson": "{\"heading\":\"Nested Page\",\"showDiagnostics\":true}"
       }
+    },
+    {
+      "id": "22222222-0000-4000-8000-000000000007",
+      "contentType": "pages",
+      "publish": true,
+      "fields": {
+        "title": "Articles Test",
+        "slug": "articles-test",
+        "controllerName": "GenericPage",
+        "viewName": "Default",
+        "configurationJson": "{\"style\":\"\",\"meta\":\"<meta name=\\\"description\\\" content=\\\"Seeded Article widget test page.\\\">\"}"
+      }
     }
   ]
 }

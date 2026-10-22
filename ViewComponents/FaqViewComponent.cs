@@ -55,12 +55,12 @@ public class FaqViewComponent : WidgetViewComponent, IRoutableViewComponent
 
     private async Task<IViewComponentResult> InvokeListAsync(FaqConfiguration config)
     {
-        // The same page zone renders on the routing widgets' own URLs, so a list yields when a
-        // routing parameter is present and lets the single-mode Faq/FaqTopic take over. The zone
-        // editor always renders it so it stays visible.
-        var routeValues = ViewContext.RouteData.Values;
+        // The same page zone renders on the routing widgets' own URLs (/page/{slug}, /page/topics/...),
+        // so a list yields on a widget route and lets the single-mode Faq/FaqTopic take over. Every CMS
+        // request carries a "slug" route value from the {**slug} catch-all, so its presence is no signal.
+        // The zone editor always renders it so it stays visible.
         var isEditMode = RenderModeFor(config) == WidgetRenderMode.Edit;
-        if (!isEditMode && (routeValues.ContainsKey("slug") || routeValues.ContainsKey("topic")))
+        if (!isEditMode && IsWidgetRouteRequest())
             return Content(string.Empty);
 
         var ct = HttpContext.RequestAborted;
@@ -98,7 +98,10 @@ public class FaqViewComponent : WidgetViewComponent, IRoutableViewComponent
         var source = "none";
         var slug = string.Empty;
 
-        if (ViewContext.RouteData.Values.TryGetValue("slug", out var slugObj)
+        // Only this item's own {slug} route addresses a slug to it; on a plain page request "slug" is the
+        // page path itself.
+        if (IsOwnWidgetRoute(config)
+            && ViewContext.RouteData.Values.TryGetValue("slug", out var slugObj)
             && slugObj is string slugValue && !string.IsNullOrEmpty(slugValue))
         {
             slug = slugValue;
@@ -150,10 +153,12 @@ public class FaqViewComponent : WidgetViewComponent, IRoutableViewComponent
     string IRoutableViewComponent.ComponentName => "Faq";
 
     Task<IReadOnlyList<CMSRouteDTO>> IRoutableViewComponent.GenerateRoutesAsync(
-        string parentRoute, Guid contentZoneItemNodeId, CancellationToken ct)
+        string parentRoute, Guid contentZoneItemNodeId, WidgetDisplayMode displayMode, CancellationToken ct)
     {
-        // Route generation has no access to the item's display mode, so the {slug} route exists for
-        // list items too; a list item yields on it (see InvokeListAsync).
+        // A list owns no routes: a {slug} route on it would answer every unknown URL under its page.
+        if (displayMode == WidgetDisplayMode.List)
+            return Task.FromResult<IReadOnlyList<CMSRouteDTO>>([]);
+
         //
         // The constraint must be *inline* in the pattern: CMSRouteService.TryMatchPattern parses
         // constraints out of the pattern text and never reads CMSRouteDTO.ConstraintsJson, so a

@@ -1,0 +1,214 @@
+{
+  "items": [
+    {
+      "id": "44444444-0000-4000-8000-000000000001",
+      "contentType": "contentzones",
+      "zone": {
+        "page": "@seed:22222222-0000-4000-8000-000000000001",
+        "slot": "Main"
+      },
+      "fields": {
+        "componentName": "FaqCount",
+        "componentPropertiesJson": "{}",
+        "isActive": true
+      }
+    },
+    {
+      "id": "44444444-0000-4000-8000-000000000002",
+      "contentType": "contentzones",
+      "zone": {
+        "page": "@seed:22222222-0000-4000-8000-000000000001",
+        "slot": "Main"
+      },
+      "fields": {
+        "componentName": "Faq",
+        "componentPropertiesJson": "{\"ListViewName\":\"Accordion\",\"Heading\":\"Seeded FAQ List\",\"Intro\":\"Every FAQ, seeded.\",\"MaxItems\":5,\"ShowAnswers\":true,\"SortOrder\":\"title-asc\",\"FeaturedFaqId\":\"@seed:11111111-0000-4000-8000-000000000001\",\"TestMarker\":\"faq-test-list\",\"HeadingIcon\":\"fa-solid fa-circle-question\"}",
+        "isActive": true,
+        "metadataJson": "{\"DisplayMode\":\"List\"}"
+      }
+    },
+    {
+      "id": "44444444-0000-4000-8000-000000000003",
+      "contentType": "contentzones",
+      "zone": {
+        "page": "@seed:22222222-0000-4000-8000-000000000001",
+        "slot": "Main"
+      },
+      "fields": {
+        "componentName": "Faq",
+        "componentPropertiesJson": "{\"FaqId\":\"@seed:11111111-0000-4000-8000-000000000002\",\"ShowBackLink\":true,\"BackLinkText\":\"Back to FAQs\"}",
+        "isActive": true
+      }
+    },
+    {
+      "id": "44444444-0000-4000-8000-000000000004",
+      "contentType": "contentzones",
+      "zone": {
+        "page": "@seed:22222222-0000-4000-8000-000000000001",
+        "slot": "Main"
+      },
+      "fields": {
+        "componentName": "FaqTopic",
+        "componentPropertiesJson": "{\"PageSize\":2,\"EmptyMessage\":\"No FAQs for this topic.\"}",
+        "isActive": true
+      }
+    },
+    {
+      "id": "44444444-0000-4000-8000-000000000005",
+      "contentType": "contentzones",
+      "zone": {
+        "name": "SiteFooter"
+      },
+      "fields": {
+        "componentName": "FaqCount",
+        "componentPropertiesJson": "{}",
+        "isActive": true
+      }
+    },
+    {
+      "id": "44444444-0000-4000-8000-000000000006",
+      "contentType": "contentzones",
+      "zone": {
+        "page": "@seed:22222222-0000-4000-8000-000000000003",
+        "slot": "PageHeader"
+      },
+      "fields": {
+        "componentName": "ContentBlock",
+        "componentPropertiesJson": "{\"ContentBlockID\":\"@seed:33333333-0000-4000-8000-000000000001\"}",
+        "isActive": true
+      }
+    },
+    {
+      "id": "44444444-0000-4000-8000-000000000007",
+      "contentType": "contentzones",
+      "zone": {
+        "page": "@seed:22222222-0000-4000-8000-000000000003",
+        "slot": "PageMain"
+      },
+      "fields": {
+        "componentName": "Layout",
+        "componentPropertiesJson": "{\"ViewName\":\"TwoColumnSidebar\"}",
+        "isActive": true
+      }
+    },
+    {
+      "id": "44444444-0000-4000-8000-000000000008",
+      "contentType": "contentzones",
+      "zone": {
+        "item": "@seed:44444444-0000-4000-8000-000000000007",
+        "slot": "Main"
+      },
+      "fields": {
+        "componentName": "ContentBlock",
+        "componentPropertiesJson": "{\"ContentBlockID\":\"@seed:33333333-0000-4000-8000-000000000002\"}",
+        "isActive": true
+      }
+    },
+    {
+      "id": "44444444-0000-4000-8000-000000000009",
+      "contentType": "contentzones",
+      "zone": {
+        "item": "@seed:44444444-0000-4000-8000-000000000007",
+        "slot": "Sidebar"
+      },
+      "fields": {
+        "componentName": "Faq",
+        "componentPropertiesJson": "{\"ListViewName\":\"Compact\",\"Heading\":\"Sidebar FAQs\",\"MaxItems\":3,\"TestMarker\":\"zones-sidebar-list\"}",
+        "isActive": true,
+        "metadataJson": "{\"DisplayMode\":\"List\"}"
+      }
+    },
+    {
+      "id": "44444444-0000-4000-8000-000000000010",
+      "contentType": "contentzones",
+      "zone": {
+        "page": "@seed:22222222-0000-4000-8000-000000000003",
+        "slot": "PageAside"
+      },
+      "fields": {
+        "componentName": "FaqCount",
+        "componentPropertiesJson": "{}",
+        "isActive": true
+      }
+    },
+    {
+      "id": "44444444-0000-4000-8000-000000000011",
+      "contentType": "contentzones",
+      "zone": {
+        "name": "ShowcaseGlobal"
+      },
+      "fields": {
+        "componentName": "ContentBlock",
+        "componentPropertiesJson": "{\"ContentBlockID\":\"@seed:33333333-0000-4000-8000-000000000003\"}",
+        "isActive": true
+      }
+    },
+    {
+      "id": "44444444-0000-4000-8000-000000000012",
+      "contentType": "contentzones",
+      "zone": {
+        "page": "@seed:22222222-0000-4000-8000-000000000004",
+        "slot": "LandingHero"
+      },
+      "fields": {
+        "componentName": "ContentBlock",
+        "componentPropertiesJson": "{\"ContentBlockID\":\"@seed:33333333-0000-4000-8000-000000000004\"}",
+        "isActive": true
+      }
+    },
+    {
+      "id": "44444444-0000-4000-8000-000000000013",
+      "contentType": "contentzones",
+      "zone": {
+        "page": "@seed:22222222-0000-4000-8000-000000000004",
+        "slot": "LandingHero"
+      },
+      "fields": {
+        "componentName": "Image",
+        "componentPropertiesJson": "{\"ImageNodeId\":\"@seed:33333333-0000-4000-8000-000000000010\",\"ShowCaption\":true}",
+        "isActive": true
+      }
+    },
+    {
+      "id": "44444444-0000-4000-8000-000000000014",
+      "contentType": "contentzones",
+      "zone": {
+        "page": "@seed:22222222-0000-4000-8000-000000000004",
+        "slot": "PageMain"
+      },
+      "fields": {
+        "componentName": "Faq",
+        "componentPropertiesJson": "{\"Heading\":\"Landing FAQs\",\"MaxItems\":4,\"TestMarker\":\"landing-list\"}",
+        "isActive": true,
+        "metadataJson": "{\"DisplayMode\":\"List\"}"
+      }
+    },
+    {
+      "id": "44444444-0000-4000-8000-000000000015",
+      "contentType": "contentzones",
+      "zone": {
+        "page": "@seed:22222222-0000-4000-8000-000000000004",
+        "slot": "LandingCta"
+      },
+      "fields": {
+        "componentName": "FaqCount",
+        "componentPropertiesJson": "{}",
+        "isActive": true
+      }
+    },
+    {
+      "id": "44444444-0000-4000-8000-000000000016",
+      "contentType": "contentzones",
+      "zone": {
+        "page": "@seed:22222222-0000-4000-8000-000000000007",
+        "slot": "Main"
+      },
+      "fields": {
+        "componentName": "Article",
+        "componentPropertiesJson": "{\"ArticleListId\":\"@seed:33333333-0000-4000-8000-000000000020\",\"MaxItems\":10,\"SortOrder\":\"newest\"}",
+        "isActive": true,
+        "metadataJson": "{\"DisplayMode\":\"List\"}"
+      }
+    }
+  ]
+}

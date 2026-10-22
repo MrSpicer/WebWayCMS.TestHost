@@ -1,0 +1,93 @@
+{
+  "items": [
+    {
+      "id": "33333333-0000-4000-8000-000000000001",
+      "contentType": "contentblocks",
+      "publish": true,
+      "fields": {
+        "title": "Showcase Header Block",
+        "slug": "showcase-header-block",
+        "content": "<p>Seeded showcase header block.</p>"
+      }
+    },
+    {
+      "id": "33333333-0000-4000-8000-000000000002",
+      "contentType": "contentblocks",
+      "publish": true,
+      "fields": {
+        "title": "Layout Main Block",
+        "slug": "layout-main-block",
+        "content": "<p>Seeded layout main column block.</p>"
+      }
+    },
+    {
+      "id": "33333333-0000-4000-8000-000000000003",
+      "contentType": "contentblocks",
+      "publish": true,
+      "fields": {
+        "title": "Showcase Global Block",
+        "slug": "showcase-global-block",
+        "content": "<p>Seeded showcase global block.</p>"
+      }
+    },
+    {
+      "id": "33333333-0000-4000-8000-000000000004",
+      "contentType": "contentblocks",
+      "publish": true,
+      "fields": {
+        "title": "Landing Hero Block",
+        "slug": "landing-hero-block",
+        "content": "<p>Seeded landing hero block.</p>"
+      }
+    },
+    {
+      "id": "33333333-0000-4000-8000-000000000010",
+      "contentType": "images",
+      "publish": true,
+      "fields": {
+        "title": "Test Pattern",
+        "slug": "test-pattern",
+        "blobHash": "@media:media/test-pattern.png",
+        "altText": "Seeded test pattern",
+        "caption": "Seeded test pattern caption."
+      }
+    },
+    {
+      "id": "33333333-0000-4000-8000-000000000020",
+      "contentType": "articlelists",
+      "publish": true,
+      "fields": {
+        "title": "Test Articles",
+        "slug": "test-articles"
+      }
+    },
+    {
+      "id": "33333333-0000-4000-8000-000000000021",
+      "contentType": "articles",
+      "publish": true,
+      "fields": {
+        "title": "First Seeded Article",
+        "slug": "first-seeded-article",
+        "articleListId": "@seed:33333333-0000-4000-8000-000000000020",
+        "summary": "Summary of the first seeded article.",
+        "body": "<p>Body of the first seeded article.</p>",
+        "authorName": "Seed Author",
+        "publicationDate": "2026-01-10T09:00:00"
+      }
+    },
+    {
+      "id": "33333333-0000-4000-8000-000000000022",
+      "contentType": "articles",
+      "publish": true,
+      "fields": {
+        "title": "Second Seeded Article",
+        "slug": "second-seeded-article",
+        "articleListId": "@seed:33333333-0000-4000-8000-000000000020",
+        "summary": "Summary of the second seeded article.",
+        "body": "<p>Body of the second seeded article.</p>",
+        "authorName": "Seed Author",
+        "publicationDate": "2026-02-10T09:00:00"
+      }
+    }
+  ]
+}

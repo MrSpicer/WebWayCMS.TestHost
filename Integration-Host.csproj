@@ -24,6 +24,9 @@
 
   <ItemGroup>
     <EmbeddedResource Include="Fixtures\faqs.contentseed.json" />
+    <!-- Seed files reference images with @media:, resolved beside the seed file at runtime, so the
+         images must ship next to the *.json seeds (which the Web SDK already publishes). -->
+    <Content Include="contentseed\**\*.png" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
   </ItemGroup>
 
 </Project>
