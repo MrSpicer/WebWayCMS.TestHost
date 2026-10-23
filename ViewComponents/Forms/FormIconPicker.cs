@@ -29,11 +29,10 @@ public sealed class FormIconPicker : FormFieldViewComponentBase
         ["fa-solid fa-star"] = "Star",
     };
 
-    public override IViewComponentResult Invoke(FormFieldContext field, string? viewName = null)
+    public override IViewComponentResult Invoke(FormFieldContext field)
     {
-        var name = viewName ?? (field.Mode == FormFieldMode.Read ? "Read" : "Write");
         if (field.Mode == FormFieldMode.Read)
-            return View(name, field);
+            return FieldView(field, field);
 
         var options = field.DropdownOptions.Count > 0 ? field.DropdownOptions : DefaultOptions;
 
@@ -43,7 +42,7 @@ public sealed class FormIconPicker : FormFieldViewComponentBase
             Options = options,
         };
 
-        return View(name, viewModel);
+        return FieldView(field, viewModel);
     }
 }
 
