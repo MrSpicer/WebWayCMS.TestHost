@@ -114,6 +114,25 @@ test('reference modal: New Article List from the Article form, validation inside
   await expect(page.frameLocator('iframe.relation-modal-frame').locator('#Title')).toHaveValue(`${PREFIX}Modal List`);
 });
 
+test('modal publish: a New list created through the picker modal goes live, not stranded as a draft', async ({ page }) => {
+  await open(page, '/wadmin/articles/create');
+  const field = page.locator('.field', { has: page.locator('select[name="ArticleListId"]') });
+  await field.locator('.entity-picker-new').click();
+
+  const frame = page.frameLocator('iframe.relation-modal-frame');
+  await frame.locator('#Title').fill(`${PREFIX}Live List`);
+  await frame.getByRole('button', { name: 'Publish', exact: true }).click();
+
+  await expect(page.locator('[data-relation-modal]')).toHaveCount(0);
+  const select = page.locator('select[name="ArticleListId"]');
+  await expect(select).toHaveValue(GUID);
+
+  // The Publish click inside the modal must publish: the list is Live right away.
+  await open(page, '/wadmin/articlelists');
+  const row = page.locator('tr', { has: page.locator('a.admin-list-title', { hasText: new RegExp(`^\\s*${PREFIX}Live List\\s*$`) }) });
+  await expect(row).toContainText('Live');
+});
+
 test('routes: a modal-added Explicit route, a parent rename rewriting the child URL, a move, and a subtree delete', async ({ page }) => {
   // 1. A published page with its Derived route.
   const docsId = await createPage(page, `${PREFIX}Docs`, 'e2e-docs');
@@ -163,9 +182,18 @@ test('routes: a modal-added Explicit route, a parent rename rewriting the child 
   await expectStatus(page, '/e2e-other/intro', 200);
   await expectStatus(page, '/e2e-guides/intro', 404);
 
-  // 6. A page can't be moved under its own child.
+  // 6. A page can't be moved under its own child: the picker excludes the edited page's own
+  //    subtree, so the child option is never offered; the server guard is still exercised with a
+  //    forged value (simulating a stale/tampered client).
   await open(page, `/wadmin/pages/edit/${otherId}`);
-  await pick(page, 'ParentNodeId', introId);
+  await expect(page.locator(`select[name="ParentNodeId"] option[value="${introId}"]`)).toHaveCount(0);
+  await page.locator('select[name="ParentNodeId"]').evaluate((el: HTMLSelectElement, id: string) => {
+    const forged = document.createElement('option');
+    forged.value = id;
+    forged.textContent = 'E2E Intro';
+    el.add(forged);
+    el.value = id;
+  }, introId);
   await page.getByRole('button', { name: 'Save as Draft' }).click();
   await expect(page.locator('[data-valmsg-for="ParentNodeId"]')).toContainText('under itself or one of its descendants');
 
