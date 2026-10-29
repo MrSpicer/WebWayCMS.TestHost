@@ -2,7 +2,7 @@
   "items": [
     {
       "id": "44444444-0000-4000-8000-000000000001",
-      "contentType": "contentzones",
+      "contentType": "contentzoneitems",
       "zone": {
         "page": "@seed:22222222-0000-4000-8000-000000000001",
         "slot": "Main"
@@ -15,7 +15,7 @@
     },
     {
       "id": "44444444-0000-4000-8000-000000000002",
-      "contentType": "contentzones",
+      "contentType": "contentzoneitems",
       "zone": {
         "page": "@seed:22222222-0000-4000-8000-000000000001",
         "slot": "Main"
@@ -29,7 +29,7 @@
     },
     {
       "id": "44444444-0000-4000-8000-000000000003",
-      "contentType": "contentzones",
+      "contentType": "contentzoneitems",
       "zone": {
         "page": "@seed:22222222-0000-4000-8000-000000000001",
         "slot": "Main"
@@ -42,7 +42,7 @@
     },
     {
       "id": "44444444-0000-4000-8000-000000000004",
-      "contentType": "contentzones",
+      "contentType": "contentzoneitems",
       "zone": {
         "page": "@seed:22222222-0000-4000-8000-000000000001",
         "slot": "Main"
@@ -55,7 +55,7 @@
     },
     {
       "id": "44444444-0000-4000-8000-000000000005",
-      "contentType": "contentzones",
+      "contentType": "contentzoneitems",
       "zone": {
         "name": "SiteFooter"
       },
@@ -67,7 +67,7 @@
     },
     {
       "id": "44444444-0000-4000-8000-000000000006",
-      "contentType": "contentzones",
+      "contentType": "contentzoneitems",
       "zone": {
         "page": "@seed:22222222-0000-4000-8000-000000000003",
         "slot": "PageHeader"
@@ -80,7 +80,7 @@
     },
     {
       "id": "44444444-0000-4000-8000-000000000007",
-      "contentType": "contentzones",
+      "contentType": "contentzoneitems",
       "zone": {
         "page": "@seed:22222222-0000-4000-8000-000000000003",
         "slot": "PageMain"
@@ -93,7 +93,7 @@
     },
     {
       "id": "44444444-0000-4000-8000-000000000008",
-      "contentType": "contentzones",
+      "contentType": "contentzoneitems",
       "zone": {
         "item": "@seed:44444444-0000-4000-8000-000000000007",
         "slot": "Main"
@@ -106,7 +106,7 @@
     },
     {
       "id": "44444444-0000-4000-8000-000000000009",
-      "contentType": "contentzones",
+      "contentType": "contentzoneitems",
       "zone": {
         "item": "@seed:44444444-0000-4000-8000-000000000007",
         "slot": "Sidebar"
@@ -120,7 +120,7 @@
     },
     {
       "id": "44444444-0000-4000-8000-000000000010",
-      "contentType": "contentzones",
+      "contentType": "contentzoneitems",
       "zone": {
         "page": "@seed:22222222-0000-4000-8000-000000000003",
         "slot": "PageAside"
@@ -133,7 +133,7 @@
     },
     {
       "id": "44444444-0000-4000-8000-000000000011",
-      "contentType": "contentzones",
+      "contentType": "contentzoneitems",
       "zone": {
         "name": "ShowcaseGlobal"
       },
@@ -145,7 +145,7 @@
     },
     {
       "id": "44444444-0000-4000-8000-000000000012",
-      "contentType": "contentzones",
+      "contentType": "contentzoneitems",
       "zone": {
         "page": "@seed:22222222-0000-4000-8000-000000000004",
         "slot": "LandingHero"
@@ -158,7 +158,7 @@
     },
     {
       "id": "44444444-0000-4000-8000-000000000013",
-      "contentType": "contentzones",
+      "contentType": "contentzoneitems",
       "zone": {
         "page": "@seed:22222222-0000-4000-8000-000000000004",
         "slot": "LandingHero"
@@ -171,7 +171,7 @@
     },
     {
       "id": "44444444-0000-4000-8000-000000000014",
-      "contentType": "contentzones",
+      "contentType": "contentzoneitems",
       "zone": {
         "page": "@seed:22222222-0000-4000-8000-000000000004",
         "slot": "PageMain"
@@ -185,7 +185,7 @@
     },
     {
       "id": "44444444-0000-4000-8000-000000000015",
-      "contentType": "contentzones",
+      "contentType": "contentzoneitems",
       "zone": {
         "page": "@seed:22222222-0000-4000-8000-000000000004",
         "slot": "LandingCta"
@@ -198,7 +198,7 @@
     },
     {
       "id": "44444444-0000-4000-8000-000000000016",
-      "contentType": "contentzones",
+      "contentType": "contentzoneitems",
       "zone": {
         "page": "@seed:22222222-0000-4000-8000-000000000007",
         "slot": "Main"

@@ -41,16 +41,22 @@ fixtures span both source providers so a single boot exercises both:
 
 | File | Provider | Contents |
 |---|---|---|
-| `Fixtures/faqs.contentseed.json` | embedded resource (`.contentseed.json` suffix) | 7 `faqs` items |
+| `Fixtures/faqs.contentseed.json` | embedded resource (`.contentseed.json` suffix) | 2 `faqtopics` + 7 `faqs` items |
 | `contentseed/pages.json` | disk folder (`ContentSeed:Path` defaults to `contentseed`) | 7 `pages` items |
 | `contentseed/content.json` | disk folder | 4 `contentblocks`, 1 `images` (`@media:media/test-pattern.png`), 1 `articlelists` + 2 `articles` |
 | `contentseed/zones.json` | disk folder | 16 zone items (`zone` locators) filling every page's zones — see below |
 
-Seed-id ranges: `11111111-…` FAQs, `22222222-…` pages, `33333333-…` other content, `44444444-…` zone items.
+Seed-id ranges: `11111111-…` FAQs, `22222222-…` pages, `33333333-…` other content, `44444444-…` zone items,
+`55555555-…` FAQ topics.
+
+FAQ topics `general` and `billing` (both published) are the host's `faqtopics` content type. Each FAQ
+names its topic with `"faqTopicId": "@seed:5555…"`, a containment relation
+(`[ContentRelation("faqtopics", Kind = Containment)]` on `FaqUpsertViewModel.FaqTopicId`): a topic's
+edit screen lists its FAQs, unpublishing it hides them, and deleting it deletes them.
 
 FAQ slugs:
 
-| Slug | Topic (slug prefix) | Rating | Published |
+| Slug | Topic | Rating | Published |
 |---|---|---|---|
 | `general-reset-password` | `general` | 5 | yes |
 | `general-account-page` | `general` | 4 | yes |
@@ -58,9 +64,9 @@ FAQ slugs:
 | `general-support-hours` | `general` | 2 | yes |
 | `billing-update-card` | `billing` | 1 | yes |
 | `billing-refunds` | `billing` (sanitization probe) | 0 | yes |
-| `draft-unpublished` | — | 5 | no |
+| `draft-unpublished` | — (no topic) | 5 | no |
 
-`FaqCount` renders **6**; `FaqTopic` on `general` matches **4** (page size 2 ⇒ two full pages) and on
+`FaqCount` renders **6**; `FaqTopic` on `general` lists that topic's **4** FAQs (page size 2 ⇒ two full pages) and on
 `billing` matches **2**. Ratings are all distinct so `data-faq-rating` assertions pin the right row.
 
 Page slugs: `faq-test`, `page-test` (+ its child `page-test/nested`), `zones`, `zones-landing`,
@@ -93,16 +99,15 @@ with `WEBWAYCMS_SKIP_CONTENTSEED=true` (or `ContentSeed:Enabled=false`).
 ## Test widgets
 
 Four host-owned content-zone widgets exercise the whole widget system end-to-end through the real
-admin UI and public rendering path. They are the surface a Playwright suite drives. The FAQ and page
-*content* is seeded (see Seeded fixtures), but *widget placements* are not — each widget renders a
-stable, assertable empty state, and Playwright places the widgets into zones through the admin UI
-itself.
+admin UI and public rendering path. Both the content *and* the widget placements are seeded (see
+Seeded fixtures), and the [Playwright suite](#playwright-suite) asserts what they render. Each widget
+also renders a stable, assertable empty state for a hand-built zone.
 
 | Widget | Type | Category | What it covers |
 |---|---|---|---|
-| `Faq` | routing (1 route), `SupportsList` | `FAQ Test` | Single/List display modes with per-mode configurators. **Single**: `{slug}` route, slug → `GetBySlugAsync` resolution, configured-FAQ fallback, `view.*` views. **List**: full config matrix — one property per `EditorType` (all 15), `EntityPicker` against the host `faqs` type, `ListViewName` picker over 3 `list.*` views, plus a `HeadingIcon` property on the host-contributed `IconPicker` form component |
+| `Faq` | routing (1 route), `SupportsList` | `FAQ Test` | Single/List display modes with per-mode configurators. **Single**: `{slug}` route, slug → `GetBySlugAsync` resolution, configured-FAQ fallback, `view.*` views. **List**: full config matrix — one property per `EditorType` (all 15), `[ContentRelation("faqs")]` pickers (`FaqId`, `FeaturedFaqId`; stored as `config.*` relations, `Detach`) against the host `faqs` type, `ListViewName` picker over 3 `list.*` views, plus a `HeadingIcon` property on the host-contributed `IconPicker` form component |
 | `FaqCount` | non-routing | `FAQ Test` | the zero-config path (`HasConfiguration == false`, modal renders no fields) |
-| `FaqTopic` | routing (2 routes) | `FAQ Test Routing` | `topics/{topic}` + `topics/{topic}/page/{pageNumber:int}` — multi-route, literal segments, inline `int` constraint |
+| `FaqTopic` | routing (2 routes) | `FAQ Test Routing` | `topics/{topic}` + `topics/{topic}/page/{pageNumber:int}` — multi-route, literal segments, inline `int` constraint; `{topic}` is a `faqtopics` slug and the list is that topic's FAQs (`FindRelatedAsync` over the containment) |
 
 Zones exercised:
 
@@ -161,7 +166,9 @@ Then at `http://localhost:45847`:
    `/faq-test`, `/faq-test/<a-faq-slug>`, `/faq-test/topics/general`,
    `/faq-test/topics/general/page/2`. Both inline constraints hold:
    `/faq-test/topics/general/page/abc` → 404 (`:int`), and `/faq-test/Not_A_Slug` → 404 (the slug
-   regex; a matching-but-unknown slug like `/faq-test/nope` renders the `_NotFound` view instead).
+   regex). A matching-but-unknown slug like `/faq-test/nope` falls back to the Single item's configured
+   FAQ (`data-source="config"`, `data-slug="nope"`); only an item with no configured `FaqId` renders the
+   `_NotFound` view.
 9. Delete the `FaqTopic` zone item → its two route rows are swept from `/wadmin/routes` and the URLs
    404. Re-add it → the routes come back.
 10. Nested zones: `/zones` already carries a seeded **Layout** (`TwoColumnSidebar`) whose inner `Main`
@@ -191,6 +198,10 @@ in `list.Compact` and `FaqTopic/view.default`, `<tr>` in `FaqTopic/view.Table`),
 single-mode `Faq` root (`data-testid="faq-detail"`; omitted there when no FAQ resolved). That closes the loop the `data-cfg-*` attributes
 close for widget config: it is the only public-side surface proving a *content-type* field round-tripped
 through the custom form component to the database and back.
+
+FAQ answers are rich text, sanitized on save (`RichTextSanitizer`, which the JSON seeder also runs
+through `SaveUpsertAsync`), so every Faq view renders them as HTML (`@Html.Raw`) — the seeded
+`billing-refunds` answer is the probe that its `<script>` and `onclick` are gone.
 
 ## Host-Contributed Form Components
 
@@ -300,3 +311,40 @@ on each zone wrapper, the `_PageDiagnostics` block (`active-view`, `page-control
    endpoint, so the dropdown always offered just `Default`. It now populates from
    `GET /wadmin/pages/registry/{name}/properties`, and `FormViewPicker` retains an unknown stored
    value as an option so an edit load keeps the selection.
+
+## Playwright suite
+
+`e2e/` is a [Playwright](https://playwright.dev) (`@playwright/test`, TypeScript, Chromium) suite that
+asserts exactly what the seeded fixtures render through this host's views — every seeded page, its
+zones and widget routes, the navbar and global footer zone, media serving, security headers, the
+`[CmsRoute]` code routes, and (as the seeded admin) the admin lists, the content-relation children panels
+(article list → articles, FAQ topic → FAQs) and the `faq-test` draft preview.
+Expected content strings are read from the seed files themselves (`e2e/support/seed.ts`); expected
+orders and counts are literals in the specs.
+
+The suite assumes a **freshly seeded database**. Every spec is read-only except
+`tests/relations.write.spec.ts`, which runs in its own `writes` project only after all read-only specs
+passed: the reference modal round trip (New Article List from the Article form), an Explicit route added
+through the routes modal, a parent rename rewriting a live child's URL, a page move with the Parent Page
+picker, the move-under-own-child refusal, and a two-level subtree delete with its confirm count. Everything
+it creates is titled `E2E …` and swept before and after, so the suite can be re-run against the same
+stack:
+
+```bash
+./scripts/TearDownIntegrationhost.sh -v    # from the CMS repo root
+./scripts/StartIntegrationHost.sh
+cd WebWayCMS.TestHost/e2e
+npm ci
+npm run install-browsers                   # once: downloads Chromium
+npm test                                   # or: npm run test:ui, npm run report
+```
+
+| Variable | Default | Purpose |
+|---|---|---|
+| `BASE_URL` | `http://localhost:45847` | The stack under test |
+| `ADMIN_EMAIL` / `ADMIN_PASSWORD` | the `docker-compose.yml` values | The seeded admin used by `admin.spec.ts` |
+
+The admin logs in once per run (`tests/auth.setup.ts`) and the session is reused from `e2e/.auth/`:
+the Identity endpoints allow only 5 requests per minute per client IP. `e2e/**` is excluded from the
+host's build (`DefaultItemExcludes`); the CMS repo-root `.dockerignore` only ignores a root
+`node_modules/`, so `e2e/node_modules` is sent in the docker build context (harmless, just slower).

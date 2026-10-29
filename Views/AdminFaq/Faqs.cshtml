@@ -8,6 +8,10 @@
     <div class="container">
         <div class="admin-page-title-row">
             <h1 class="title is-4">FAQs</h1>
+            <a asp-controller="AdminContent" asp-action="Index" asp-route-contentType="faqtopics" class="button">
+                <span class="icon"><i class="fas fa-tags" aria-hidden="true"></i></span>
+                <span>Topics</span>
+            </a>
             <a asp-controller="AdminContent" asp-action="Create" asp-route-contentType="faqs" class="button is-primary">
                 <span class="icon"><i class="fas fa-plus" aria-hidden="true"></i></span>
                 <span>New FAQ</span>
@@ -41,6 +45,7 @@
                         <tr>
                             <th scope="col">Title</th>
                             <th scope="col">Slug</th>
+                            <th scope="col">Topic</th>
                             <th scope="col">Modified</th>
                             <th scope="col"><span class="is-sr-only">Actions</span></th>
                         </tr>
@@ -51,6 +56,7 @@
                             <tr>
                                 <td>@faq.Title</td>
                                 <td>@faq.Slug</td>
+                                <td>@faq.TopicTitle</td>
                                 <td>@faq.ModificationDate.ToString("yyyy-MM-dd HH:mm")</td>
                                 <td>
                                     <div class="buttons are-small">

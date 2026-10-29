@@ -13,6 +13,8 @@ public sealed class FaqMappingProfile : Profile
 {
     public FaqMappingProfile()
     {
+        // FaqUpsertViewModel.FaqTopicId is a [ContentRelation]: the mapper's relation step fills it (and
+        // writes it back), so no mapping below mentions it.
         CreateMap<FaqDTO, FaqViewModel>(s => new FaqViewModel
         {
             NodeId = s.Version.Node.Id,
@@ -67,6 +69,43 @@ public sealed class FaqMappingProfile : Profile
             Slug = s.Version.Slug ?? string.Empty,
             IsPublished = s.Version.State == ContentVersionState.Published,
             CreationDate = s.Version.Node.CreatedUtc,
+            ModificationDate = s.Version.CreatedUtc,
+        });
+
+        CreateMap<FaqTopicDTO, FaqTopicUpsertViewModel>(s => new FaqTopicUpsertViewModel
+        {
+            NodeId = s.Version.Node.Id,
+            ExpectedVersionNumber = s.Version.VersionNumber,
+            Title = s.Version.Title ?? string.Empty,
+            Slug = s.Version.Slug ?? string.Empty,
+            Description = s.Description,
+            PublicationDate = s.Version.PublishStartUtc,
+            PublicationEndDate = s.Version.PublishEndUtc,
+            IsHidden = s.Version.Node.IsHidden,
+            IsPublished = s.Version.State == ContentVersionState.Published,
+            CreationDate = s.Version.Node.CreatedUtc,
+            ModificationDate = s.Version.CreatedUtc,
+        });
+
+        CreateMap<FaqTopicUpsertViewModel, FaqTopicDTO>(s => new FaqTopicDTO
+        {
+            Description = s.Description ?? string.Empty,
+            Version = new ContentVersion
+            {
+                Node = new ContentNode { Id = s.NodeId ?? Guid.Empty, IsHidden = s.IsHidden },
+                Title = s.Title ?? string.Empty,
+                Slug = s.Slug ?? string.Empty,
+                PublishStartUtc = s.PublicationDate,
+                PublishEndUtc = s.PublicationEndDate,
+            },
+        });
+
+        CreateMap<FaqTopicDTO, FaqTopicItemViewModel>(s => new FaqTopicItemViewModel
+        {
+            NodeId = s.Version.Node.Id,
+            Title = s.Version.Title ?? string.Empty,
+            Slug = s.Version.Slug ?? string.Empty,
+            IsPublished = s.Version.State == ContentVersionState.Published,
             ModificationDate = s.Version.CreatedUtc,
         });
     }

@@ -5,6 +5,9 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>c9b5010a-16d9-46a5-bfdd-570327ae5743</UserSecretsId>
+    <!-- The Playwright suite (e2e/) is a separate Node project: keep its node_modules and .ts files
+         out of the build and publish. -->
+    <DefaultItemExcludes>$(DefaultItemExcludes);e2e/**</DefaultItemExcludes>
   </PropertyGroup>
 
   <ItemGroup>

@@ -10,18 +10,22 @@ using WebWayCMS.TestHost.ViewComponents;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Host extensibility: contribute a host-owned EF content type (FaqDTO), its migrations context,
-// mapping profile, and content store — entirely from this project, no CMS source changes.
+// Host extensibility: contribute host-owned EF content types (FaqDTO, FaqTopicDTO), their migrations
+// context, mapping profile, and content stores — entirely from this project, no CMS source changes. The
+// FAQ → topic link is one [ContentRelation] on FaqUpsertViewModel.FaqTopicId: no FK, nothing to register.
 builder.Services.AddWebWayCms(builder.Configuration, cms =>
 {
     cms.AddApplicationAssembly(typeof(FaqDTO).Assembly);
     cms.AddMappingProfile(new FaqMappingProfile());
     cms.AddContentType<FaqDTO>("faqs");
+    cms.AddContentType<FaqTopicDTO>("faqtopics");
     cms.AddMigrationsContext<MySiteMigrationsDbContext>("__EFMigrationsHistory_MySite");
 });
 
 builder.Services.AddScoped<FaqModel>();
 builder.Services.AddScoped<IAdminCrudHandler>(sp => sp.GetRequiredService<FaqModel>());
+builder.Services.AddScoped<FaqTopicModel>();
+builder.Services.AddScoped<IAdminCrudHandler>(sp => sp.GetRequiredService<FaqTopicModel>());
 
 // Routable widgets are collected through IEnumerable<IRoutableViewComponent>, so each one needs an
 // explicit registration alongside its concrete ViewComponent registration.

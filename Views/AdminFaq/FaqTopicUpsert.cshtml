@@ -1,0 +1,60 @@
+@model WebWayCMS.TestHost.Models.Faq.FaqTopicUpsertViewModel
+
+@{
+    var isEdit = Model?.NodeId != null && Model.NodeId != Guid.Empty;
+    ViewData["Title"] = isEdit ? "Edit FAQ Topic" : "New FAQ Topic";
+}
+
+@* The topic's FAQs are listed below this form by _AdminLayout's generic children panel (the FAQ → topic
+   containment); this view does not render them. *@
+<div class="admin-page-header">
+    <div class="container">
+        <div class="admin-page-title-row">
+            <div class="admin-page-heading">
+                <nav class="breadcrumb" aria-label="breadcrumbs">
+                    <ul>
+                        <li><a asp-controller="AdminContent" asp-action="Index" asp-route-contentType="faqtopics">FAQ Topics</a></li>
+                    </ul>
+                </nav>
+                <h1 class="title is-5">@ViewData["Title"]</h1>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container admin-page-body">
+        <form asp-action="Edit" asp-controller="AdminContent" asp-route-contentType="faqtopics" method="post" novalidate>
+            @Html.AntiForgeryToken()
+            <div role="alert" aria-live="polite">
+                @Html.ValidationSummary(false, "", new { @class = "notification is-danger" })
+            </div>
+            <div class="card">
+                <div class="card-content">
+                    <form-fields for="@Model" />
+                </div>
+                <footer class="card-footer">
+                    <div class="card-footer-item is-justify-content-flex-start">
+                        <button type="submit" class="button is-primary mr-3">Save as Draft</button>
+                        @if (Model != null)
+                        {
+                            @if (Model.IsPublished)
+                            {
+                                <button type="submit" class="button is-warning mr-3"
+                                        asp-controller="AdminContent" asp-action="Unpublish"
+                                        asp-route-contentType="faqtopics" asp-route-nodeId="@Model.NodeId">Unpublish</button>
+                            }
+                            else
+                            {
+                                <button type="submit" class="button is-success mr-3" name="submitAction" value="publish">Publish</button>
+                            }
+                        }
+                        <a asp-action="Index" asp-controller="AdminContent" asp-route-contentType="faqtopics" class="button">Cancel</a>
+                    </div>
+                </footer>
+            </div>
+        </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

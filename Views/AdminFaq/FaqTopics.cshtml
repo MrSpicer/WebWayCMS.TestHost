@@ -1,0 +1,93 @@
+@model WebWayCMS.TestHost.Models.Faq.FaqTopicIndexViewModel
+
+@{
+    ViewData["Title"] = "FAQ Topics";
+}
+
+<div class="admin-page-header">
+    <div class="container is-fluid">
+        <div class="admin-page-title-row">
+            <div class="admin-page-heading">
+                <nav class="breadcrumb" aria-label="breadcrumbs">
+                    <ul>
+                        <li><a asp-controller="AdminContent" asp-action="Index" asp-route-contentType="faqs">FAQs</a></li>
+                    </ul>
+                </nav>
+                <h1 class="title is-5">FAQ Topics</h1>
+            </div>
+            <a asp-controller="AdminContent" asp-action="Create" asp-route-contentType="faqtopics" class="button is-primary is-small">
+                <span class="icon"><i class="fas fa-plus" aria-hidden="true"></i></span>
+                <span>New Topic</span>
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="container is-fluid admin-page-body">
+        @if (!Model.Topics.Any())
+        {
+            <div class="card admin-empty-state">
+                <div class="card-content has-text-centered py-6">
+                    <p class="title is-5">No FAQ topics yet</p>
+                    <p class="subtitle is-6 has-text-grey">Create a topic, then put FAQs under it.</p>
+                    <a asp-controller="AdminContent" asp-action="Create" asp-route-contentType="faqtopics" class="button is-primary mt-2">New Topic</a>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="table-container">
+                <table class="table is-fullwidth is-striped">
+                    <caption class="is-sr-only">List of FAQ topics</caption>
+                    <thead>
+                        <tr>
+                            <th scope="col">Title</th>
+                            <th scope="col">Slug</th>
+                            <th scope="col">FAQs</th>
+                            <th scope="col">Modified</th>
+                            <th scope="col"><span class="is-sr-only">Actions</span></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var topic in Model.Topics)
+                        {
+                            <tr>
+                                <td><a asp-controller="AdminContent" asp-action="Edit" asp-route-contentType="faqtopics" asp-route-id="@topic.NodeId">@topic.Title</a></td>
+                                <td>@topic.Slug</td>
+                                <td data-testid="faq-topic-count">@topic.FaqCount</td>
+                                <td>@topic.ModificationDate.ToString("yyyy-MM-dd HH:mm")</td>
+                                <td>
+                                    <div class="buttons are-small">
+                                        <a asp-controller="AdminContent" asp-action="VersionHistory" asp-route-contentType="faqtopics" asp-route-nodeId="@topic.NodeId" class="button is-small is-info is-light">Versions</a>
+                                        <a asp-controller="AdminContent" asp-action="Edit" asp-route-contentType="faqtopics" asp-route-id="@topic.NodeId" class="button is-small">Edit</a>
+                                        @if (!topic.IsPublished)
+                                        {
+                                            <form asp-controller="AdminContent" asp-action="Publish" asp-route-contentType="faqtopics" asp-route-nodeId="@topic.NodeId" method="post" class="is-inline-block">
+                                                <button type="submit" class="button is-small is-success">Publish</button>
+                                            </form>
+                                        }
+                                        else
+                                        {
+                                            <form asp-controller="AdminContent" asp-action="Unpublish" asp-route-contentType="faqtopics" asp-route-nodeId="@topic.NodeId" method="post" class="is-inline-block">
+                                                <button type="submit" class="button is-small is-warning">Unpublish</button>
+                                            </form>
+                                        }
+                                        @* Deleting a topic deletes its FAQs (containment cascade); the confirm says how many. *@
+                                        <button type="button" class="button is-small is-danger is-light"
+                                                data-delete-trigger
+                                                data-delete-name="@topic.Title"
+                                                data-delete-descendants="@topic.FaqCount"
+                                                data-delete-descendant-label="FAQ"
+                                                data-delete-url="@Url.Action("Delete", "AdminContent", new { contentType = "faqtopics", id = topic.NodeId })">
+                                            <span class="icon"><i class="fas fa-trash" aria-hidden="true"></i></span>
+                                            <span>Delete</span>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+</div>

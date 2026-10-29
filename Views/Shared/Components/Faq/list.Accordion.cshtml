@@ -48,7 +48,8 @@
                         <div class="accordion-body">
                             @if (c.ShowAnswers)
                             {
-                                @faq.Answer
+                                @* Answers are rich text sanitized on save (RichTextSanitizer via SaveUpsertAsync), so they render raw. *@
+                                @Html.Raw(faq.Answer)
                             }
                         </div>
                     </div>

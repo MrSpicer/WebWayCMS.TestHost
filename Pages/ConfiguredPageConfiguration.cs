@@ -124,11 +124,9 @@ public class ConfiguredPageConfiguration
     [FormProperty(
         Label = "Featured FAQ",
         HelpText = "A single FAQ promoted above the page body.",
-        EditorType = EditorType.Guid,
-        EntityType = "faqs",
-        Order = 13,
-        FormComponent = "EntityPicker"
+        Order = 13
     )]
+    [ContentRelation("faqs")]
     public Guid? FeaturedFaqId { get; set; }
 
     [FormProperty(

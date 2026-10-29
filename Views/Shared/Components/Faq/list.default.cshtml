@@ -33,7 +33,8 @@
             <h3>@Model.FeaturedFaq.Question</h3>
             @if (c.ShowAnswers)
             {
-                <p>@Model.FeaturedFaq.Answer</p>
+                @* Answers are rich text sanitized on save (RichTextSanitizer via SaveUpsertAsync), so they render raw. *@
+                <div class="faq-list-featured-answer">@Html.Raw(Model.FeaturedFaq.Answer)</div>
             }
         </div>
     }
@@ -50,7 +51,7 @@
                 <dt data-faq-rating="@faq.HelpfulnessRating">@faq.Question</dt>
                 @if (c.ShowAnswers)
                 {
-                    <dd>@faq.Answer</dd>
+                    <dd>@Html.Raw(faq.Answer)</dd>
                 }
             }
         </dl>

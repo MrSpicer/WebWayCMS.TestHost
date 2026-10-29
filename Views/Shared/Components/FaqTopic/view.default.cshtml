@@ -2,7 +2,7 @@
 @{
     var c = Model.Configuration;
 }
-<div class="faq-topic" data-testid="faq-topic" data-view="Default" data-topic="@Model.Topic" data-page="@Model.Page"
+<div class="faq-topic" data-testid="faq-topic" data-view="Default" data-topic="@Model.Topic" data-topic-title="@Model.TopicTitle" data-page="@Model.Page"
      data-page-size="@Model.PageSize" data-match-count="@Model.MatchCount"
      data-cfg-pagesize="@c.PageSize" data-cfg-viewname="@c.ViewName" data-cfg-emptymessage="@c.EmptyMessage">
     @if (Model.Faqs.Count == 0)

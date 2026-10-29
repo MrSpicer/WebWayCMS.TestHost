@@ -30,6 +30,24 @@ namespace IntegrationHost.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
+
+            migrationBuilder.CreateTable(
+                name: "FaqTopics",
+                columns: table => new
+                {
+                    VersionId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Description = table.Column<string>(type: "character varying(1000)", maxLength: 1000, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_FaqTopics", x => x.VersionId);
+                    table.ForeignKey(
+                        name: "FK_FaqTopics_ContentVersions_VersionId",
+                        column: x => x.VersionId,
+                        principalTable: "ContentVersions",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
         }
 
         /// <inheritdoc />
@@ -37,6 +55,9 @@ namespace IntegrationHost.Migrations
         {
             migrationBuilder.DropTable(
                 name: "Faqs");
+
+            migrationBuilder.DropTable(
+                name: "FaqTopics");
         }
     }
 }

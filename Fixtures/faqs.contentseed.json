@@ -1,6 +1,26 @@
 {
   "items": [
     {
+      "id": "55555555-0000-4000-8000-000000000001",
+      "contentType": "faqtopics",
+      "publish": true,
+      "fields": {
+        "title": "General",
+        "slug": "general",
+        "description": "Accounts, sign-in and support."
+      }
+    },
+    {
+      "id": "55555555-0000-4000-8000-000000000002",
+      "contentType": "faqtopics",
+      "publish": true,
+      "fields": {
+        "title": "Billing",
+        "slug": "billing",
+        "description": "Payments, cards and refunds."
+      }
+    },
+    {
       "id": "11111111-0000-4000-8000-000000000001",
       "contentType": "faqs",
       "publish": true,
@@ -9,7 +29,8 @@
         "slug": "general-reset-password",
         "question": "How do I reset my password?",
         "answer": "<p>Choose <em>Forgot your password?</em> on the sign-in page and follow the link we email you.</p>",
-        "helpfulnessRating": 5
+        "helpfulnessRating": 5,
+        "faqTopicId": "@seed:55555555-0000-4000-8000-000000000001"
       }
     },
     {
@@ -21,7 +42,8 @@
         "slug": "general-account-page",
         "question": "Where can I update my account details?",
         "answer": "<p>Open your account page from the profile menu and edit your name, email, and preferences.</p>",
-        "helpfulnessRating": 4
+        "helpfulnessRating": 4,
+        "faqTopicId": "@seed:55555555-0000-4000-8000-000000000001"
       }
     },
     {
@@ -33,7 +55,8 @@
         "slug": "general-contact-support",
         "question": "How do I contact support?",
         "answer": "<p>Use the contact form, or email <strong>support@example.com</strong> and we will reply within one business day.</p>",
-        "helpfulnessRating": 3
+        "helpfulnessRating": 3,
+        "faqTopicId": "@seed:55555555-0000-4000-8000-000000000001"
       }
     },
     {
@@ -45,7 +68,8 @@
         "slug": "general-support-hours",
         "question": "What are your support hours?",
         "answer": "<p>Support is available Monday to Friday, 9am to 5pm.</p>",
-        "helpfulnessRating": 2
+        "helpfulnessRating": 2,
+        "faqTopicId": "@seed:55555555-0000-4000-8000-000000000001"
       }
     },
     {
@@ -57,7 +81,8 @@
         "slug": "billing-update-card",
         "question": "How do I update my card on file?",
         "answer": "<p>Edit your payment method on the billing page and save the new card details.</p>",
-        "helpfulnessRating": 1
+        "helpfulnessRating": 1,
+        "faqTopicId": "@seed:55555555-0000-4000-8000-000000000002"
       }
     },
     {
@@ -69,7 +94,8 @@
         "slug": "billing-refunds",
         "question": "How do I request a refund?",
         "answer": "<p>Refunds are processed within 30 days.</p><script>alert('xss')</script><p onclick=\"alert('xss')\">Contact billing for help.</p>",
-        "helpfulnessRating": 0
+        "helpfulnessRating": 0,
+        "faqTopicId": "@seed:55555555-0000-4000-8000-000000000002"
       }
     },
     {

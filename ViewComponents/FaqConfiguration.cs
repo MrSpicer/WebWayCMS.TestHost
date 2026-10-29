@@ -10,8 +10,10 @@ namespace WebWayCMS.TestHost.ViewComponents;
 /// limited list); untagged fields appear in both.
 ///
 /// List mode keeps one property per <see cref="EditorType"/> so the admin "Add Widget" modal
-/// exercises every editor in the form system; the entity pickers target the host <c>faqs</c> content
-/// type via the generic entity-picker endpoint fallback. The trailing <see cref="HeadingIcon"/>
+/// exercises every editor in the form system; the FAQ pickers are <see cref="ContentRelationAttribute"/>
+/// references to the host <c>faqs</c> content type (stored as <c>config.*</c> relations on the zone
+/// item's version, not in the JSON; <see cref="RelationDeletePolicy.Detach"/>, so deleting a featured FAQ
+/// clears the pick instead of being refused). The trailing <see cref="HeadingIcon"/>
 /// property exercises a host-contributed form component instead. The view pickers
 /// (<c>ViewName</c> for single, <c>ListViewName</c> for list) come from <see cref="WidgetConfiguration"/>.
 /// </summary>
@@ -22,12 +24,10 @@ public class FaqConfiguration : WidgetConfiguration
     [FormProperty(
         Label = "FAQ",
         HelpText = "Fallback FAQ shown when the URL has no slug.",
-        EditorType = EditorType.Guid,
-        EntityType = "faqs",
         DisplayModes = WidgetDisplayMode.Single,
-        Order = 1,
-        FormComponent = "EntityPicker"
+        Order = 1
     )]
+    [ContentRelation("faqs", OnTargetDelete = RelationDeletePolicy.Detach)]
     public Guid? FaqId { get; set; }
 
     [FormProperty(
@@ -172,12 +172,10 @@ public class FaqConfiguration : WidgetConfiguration
     [FormProperty(
         Label = "Featured FAQ",
         HelpText = "A single FAQ promoted above the list.",
-        EditorType = EditorType.Guid,
-        EntityType = "faqs",
         DisplayModes = WidgetDisplayMode.List,
-        Order = 23,
-        FormComponent = "EntityPicker"
+        Order = 23
     )]
+    [ContentRelation("faqs", OnTargetDelete = RelationDeletePolicy.Detach)]
     public Guid? FeaturedFaqId { get; set; }
 
     [FormProperty(

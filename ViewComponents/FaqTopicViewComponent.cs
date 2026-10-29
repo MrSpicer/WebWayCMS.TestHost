@@ -13,7 +13,9 @@ using WebWayCMS.TestHost.Models.Faq;
 namespace WebWayCMS.TestHost.ViewComponents;
 
 /// <summary>
-/// Host-owned routable widget. Generates two widget routes — <c>topics/{topic}</c> and
+/// Host-owned routable widget. The <c>{topic}</c> segment names a <c>faqtopics</c> item by slug, and the
+/// widget lists that topic's FAQs through the FAQ → topic containment
+/// (<see cref="FaqModel.TopicRelation"/>), so an unknown or unpublished topic lists nothing. Generates two widget routes — <c>topics/{topic}</c> and
 /// <c>topics/{topic}/page/{pageNumber:int}</c> — proving multi-route generation, literal segments inside a
 /// widget pattern, and inline-constraint matching. The parameter is not named <c>page</c>: that is an
 /// ASP.NET Core reserved routing name, and the CMS refuses to register a route that uses it.
@@ -29,11 +31,13 @@ namespace WebWayCMS.TestHost.ViewComponents;
 public class FaqTopicViewComponent : WidgetViewComponent, IRoutableViewComponent
 {
     private readonly IContentStore<FaqDTO> _store;
+    private readonly IContentStore<FaqTopicDTO> _topicStore;
     private readonly IMapper _mapper;
 
-    public FaqTopicViewComponent(IContentStore<FaqDTO> store, IMapper mapper)
+    public FaqTopicViewComponent(IContentStore<FaqDTO> store, IContentStore<FaqTopicDTO> topicStore, IMapper mapper)
     {
         _store = store ?? throw new ArgumentNullException(nameof(store));
+        _topicStore = topicStore ?? throw new ArgumentNullException(nameof(topicStore));
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
     }
 
@@ -54,8 +58,13 @@ public class FaqTopicViewComponent : WidgetViewComponent, IRoutableViewComponent
             page = parsedPage;
         }
 
-        var faqs = await _store.GetAllAsync(ct);
-        var matched = faqs.Where(f => MatchesTopic(f, topic)).ToList();
+        // Both reads follow the read context: a draft topic (or a FAQ under one) is visible only in preview.
+        var topicDto = await _topicStore.GetBySlugAsync(topic, ct);
+        var matched = topicDto == null
+            ? new List<FaqDTO>()
+            : (await _store.FindRelatedAsync(FaqModel.TopicRelation, topicDto.Version.Node.Id, ct))
+                .OrderBy(f => f.Version.Title, StringComparer.OrdinalIgnoreCase)
+                .ToList();
 
         var pageSize = config.PageSize is > 0 ? config.PageSize.Value : 10;
         var paged = matched.Skip((page - 1) * pageSize).Take(pageSize).ToList();
@@ -65,22 +74,13 @@ public class FaqTopicViewComponent : WidgetViewComponent, IRoutableViewComponent
             Configuration = config,
             Faqs = paged.Select(f => _mapper.Map<FaqViewModel>(f)).ToList(),
             Topic = topic,
+            TopicTitle = topicDto?.Version.Title ?? string.Empty,
             Page = page,
             PageSize = pageSize,
             MatchCount = matched.Count,
         };
 
         return ModeView(config, vm);
-    }
-
-    private static bool MatchesTopic(FaqDTO faq, string topic)
-    {
-        if (string.IsNullOrEmpty(topic))
-            return false;
-
-        var slug = faq.Version.Slug ?? string.Empty;
-        return slug.StartsWith(topic, StringComparison.OrdinalIgnoreCase)
-            || faq.Question.Contains(topic, StringComparison.OrdinalIgnoreCase);
     }
 
     string IRoutableViewComponent.ComponentName => "FaqTopic";

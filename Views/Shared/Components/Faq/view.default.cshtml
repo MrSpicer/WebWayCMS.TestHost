@@ -21,7 +21,8 @@
     {
         <h2 class="faq-detail-title">@Model.Faq.Title</h2>
         <h3 class="faq-detail-question">@Model.Faq.Question</h3>
-        <div class="faq-detail-answer">@Model.Faq.Answer</div>
+        @* Answers are rich text sanitized on save (RichTextSanitizer via SaveUpsertAsync), so they render raw. *@
+        <div class="faq-detail-answer">@Html.Raw(Model.Faq.Answer)</div>
     }
 
     @if (c.ShowBackLink)
