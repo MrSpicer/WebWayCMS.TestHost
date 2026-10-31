@@ -16,7 +16,12 @@ services:
       AdminUser__Password: XKX%aeOtKcte7jBcHn
       CKEditor__LicenseKey: ${CKEDITOR_LICENSE_KEY}
       Mcp__Enabled: "true"
-      Mcp__ApiKey: "9d7437edbe9cd29b4b71f53a51b66378bc3b1808355a7e47"
+      # A throwaway MCP personal access token for the seeded admin (e2e, curl, .mcp.json). Seed tokens
+      # are Development-only unless this Production-mode test stack opts in.
+      Mcp__AllowSeedTokensOutsideDevelopment: "true"
+      Mcp__SeedTokens__0__UserEmail: admin@example.com
+      Mcp__SeedTokens__0__Name: Integration host
+      Mcp__SeedTokens__0__Token: "9d7437edbe9cd29b4b71f53a51b66378bc3b1808355a7e47"
     depends_on:
       db:
         condition: service_healthy
